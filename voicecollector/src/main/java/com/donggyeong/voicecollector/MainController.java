@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -36,6 +37,9 @@ public class MainController {
 	}
 	
 	
+	@Value("${recorded.base.path}")
+	private String recordedBasePath;
+	
 	@SuppressWarnings("resource")
 	@PostMapping("/upload")
 	public ResponseEntity<?> handleFileUpload(@RequestParam("scriptSentenceId") String scriptSentenceId, @RequestParam("audioType") String audioType, @RequestParam("base64Data") String base64Data) {
@@ -43,11 +47,11 @@ public class MainController {
 	    try {
 	    	logger.info("1. scriptSentenceId : " + scriptSentenceId);
 	    	logger.info("2. audioType : " + audioType);
-	    	logger.info("3. base64Data : " + base64Data);
+	    	logger.info("3. base64Data : " + base64Data.substring(0, 40) + "......");
 	        
 	    	byte[] binary = Base64.getDecoder().decode(base64Data.split(",")[1]);
 	    	
-	    	String filePath = System.getProperty( "user.home" ) + "\\audio\\" + scriptSentenceId + "_" + getCurrentDateTime() + "." + audioType;
+	    	String filePath = recordedBasePath + scriptSentenceId + "_" + getCurrentDateTime() + "." + audioType;
 	    	File file = new File(filePath);
 	        FileOutputStream os = new FileOutputStream(file, true);
 	        os.write(binary);
