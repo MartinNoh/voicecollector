@@ -1,93 +1,166 @@
 <html layout:decorate="~{layout}">
 
 <div layout:fragment="content" class="container my-3">
-    <div class="row my-3">
-    	<!-- 
-        <div class="col-6">
-            <a th:href="@{/registration/create}" class="btn btn-primary">질문 등록하기</a>
-        </div>
-         -->
-        <div class="col-6">
-            <div class="input-group">
-                <input type="text" id="search_kw" class="form-control" th:value="${kw}">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
+	<div class="row my-3">
+	
+		<div class="col-6">
+			<a data-bs-toggle="modal" href="#registrationModal" role="button" id="btnRegistration" class="btn btn-primary">스크립트 등록</a>
+		</div>
+		
+		<div class="col-6">
+			<div class="input-group">
+				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="스크립트 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus >
+				<div class="input-group-append">
+					<button class="btn btn-primary" type="button" id="btn_search">검색</button>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+	
 	<table class="table table-hover">
-		<thead>
+		<thead class="table-dark">
 			<tr class="text-center">
 				<th>번호</th>
-				<th style="width:50%;">문장</th>
+				<th style="width: 50%;">스크립트</th>
 				<!-- 
 				<th>작성자</th>
 				 -->
-				<th>작성일시</th>
+				<th>등록일시</th>
 				<th>녹음완료</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="text-center" th:each="registration, loop :  ${paging}">
 				<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
-				<td th:text="${registration.sentence}" class="text-start"></td>
+				<td th:text="${registration.script}" class="text-start"></td>
 				<!-- 
 				<td><span th:if="${registration.email != null }" th:text="${registration.email.email}"></span></td>
 				 -->
-				<td th:text="${#temporals.format(registration.createdDate, 'yyyy-MM-dd HH:mm')}" style="text-align: center;"></td>
-				<td th:text="${registration.workedYn}" class="text-start"></td>
+				<td th:text="${#temporals.format(registration.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+				<td th:text="${registration.workedYn}"></td>
 			</tr>
 			<tr class="text-center" th:if="${paging.isEmpty()}">
 				<td colspan="4">등록된 문장이 없습니다.</td>
 			</tr>
 		</tbody>
 	</table>
-	
-    <!-- 페이징처리 시작 -->
-    <div th:if="${!paging.isEmpty()}">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-                <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}">
-                    <span>이전</span>
-                </a>
-            </li>
-            <li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}" 
-                th:if="${(paging.number <= 2 and page < 5)
+
+
+	<!-- 페이징처리 시작 -->
+	<div th:if="${!paging.isEmpty()}">
+		<ul class="pagination justify-content-center">
+			<li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+				<a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
+			</li>
+			<li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+					th:if="${(paging.number <= 2 and page < 5)
                 	or (paging.number > 2 and page >= paging.number-2 and page <= paging.number+2)
                 	or (paging.number >= paging.totalPages-2 and page > paging.totalPages-6)}"
-                th:classappend="${page == paging.number} ? 'active'" 
-                class="page-item">
-                <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
-            </li>
-            <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-                <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}">
-                    <span>다음</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-    <!-- 페이징처리 끝 -->
-    <form th:action="@{/registration/list}" method="get" id="searchForm">
-    	<input type="hidden" id="kw" name="kw" th:value="${kw}">
-    	<input type="hidden" id="page" name="page" th:value="${paging.number}">
-    </form>
+					th:classappend="${page == paging.number} ? 'active'" class="page-item">
+				<a th:text="${page + 1}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
+			</li>
+			<li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+				<a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+			</li>
+		</ul>
+	</div>
+	<!-- 페이징처리 끝 -->
+
+
+	<form th:action="@{/registration/list}" method="get" id="searchForm">
+		<input type="hidden" id="kw" name="kw" th:value="${kw}">
+		<input type="hidden" id="page" name="page" th:value="${paging.number}">
+	</form>
+
+
+	<!-- 스크립트 등록 모달 -->
+	<div class="modal fade" id="registrationModal" aria-hidden="true" aria-labelledby="registrationModalLabel" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="registrationModalLabel">
+						<b>스크립트 등록</b>
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body" id="modalBody">
+					<form th:action="@{/registration/create}" method="post" th:object="${registrationForm}">
+				        <div th:replace="form_errors :: formErrorsFragment"></div>
+						<div class="mb-3">
+							<label for="script" class="form-label">1. 단문 입력</label>
+							<div class="input-group">
+								<input type="text" name="script" class="form-control" placeholder="스크립트를 입력해주세요." autofocus>
+								<div class="input-group-append">
+									<button type="submit" class="btn btn-primary modal-button-confirm">등록</button>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- 
+					<form th:action="@{/registration/create}" method="post" th:object="${registrationForm}">
+						<div class="mb-3">
+							<label for="script" class="form-label">2. Excel 등록</label>
+							<div class="input-group d-flex justify-content-between">
+								<p style="vertical-align: middle;">*.xlsx 파일의 A열에 스크립트만 기입해주세요.</p>
+								<div class="input-group-append">
+									<button type="submit" class="btn btn-primary modal-button-confirm">등록</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				 	-->
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
 </div>
 
-<script layout:fragment="script" type='text/javascript'>
-const page_elements = document.getElementsByClassName("page-link");
-Array.from(page_elements).forEach(function(element) {
-    element.addEventListener('click', function() {
-        document.getElementById('page').value = this.dataset.page;
-        document.getElementById('searchForm').submit();
-    });
-});
-const btn_search = document.getElementById("btn_search");
-btn_search.addEventListener('click', function() {
-    document.getElementById('kw').value = document.getElementById('search_kw').value;
-    document.getElementById('page').value = 0;  // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
-    document.getElementById('searchForm').submit();
-});
+
+<script layout:fragment="script" type='text/javascript' th:inline="javascript">
+	// 페이지네이션 클릭
+	const page_elements = document.getElementsByClassName("page-link");
+	Array.from(page_elements).forEach(function(element) {
+		element.addEventListener('click', function() {
+			document.getElementById('page').value = this.dataset.page;
+			document.getElementById('searchForm').submit();
+		});
+	});
+	
+	// 검색버튼 클릭
+	const btn_search = document.getElementById("btn_search");
+	btn_search.addEventListener('click', function() {
+		document.getElementById('kw').value = document
+				.getElementById('search_kw').value;
+		document.getElementById('page').value = 0; // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
+		document.getElementById('searchForm').submit();
+	});
+	
+
+	// 검색칸 enter 이벤트 처리
+	function enterSearchBtn(){
+		document.getElementById('btn_search').click();
+	}
+	
+	// 등록 오류 시 모달 가져오기
+	window.onload = function(){
+		if(/*[[${#strings.equals(createError, 'Y')}]]*/ 'default'){
+			document.getElementById('btnRegistration').click();
+		}
+	}
+	
+	// 모달 입력칸 autofocus 처리
+	$('.modal').on('shown.bs.modal', function() {
+	  $(this).find('[autofocus]').focus();
+	});
 </script>
 
 </html>

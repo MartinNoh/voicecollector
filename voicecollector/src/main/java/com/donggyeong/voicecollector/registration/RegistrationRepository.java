@@ -12,7 +12,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
 			+ "distinct r "
 			+ "from Registration r "
 			+ "where 1=1 "
-			+ "	and r.sentence like %:kw% "
+			+ "	and r.script like %:kw% "
 			)
 	Page<Registration> findAllBySearch(@Param("kw") String kw, Pageable pageable);
 }

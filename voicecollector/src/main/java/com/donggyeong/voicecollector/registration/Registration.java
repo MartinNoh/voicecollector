@@ -22,7 +22,7 @@ public class Registration extends BasetimeEntity{
 	private Integer id;
 	
 	@Column(nullable = false)
-	private String sentence;
+	private String script;
 	
 	@Column(nullable = false, columnDefinition = "char")
 	private String workedYn;

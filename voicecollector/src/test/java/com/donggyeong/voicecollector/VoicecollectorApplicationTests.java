@@ -17,9 +17,9 @@ class VoicecollectorApplicationTests {
 	
 	@Test
 	void contextLoads() {
-		for(int i=1; i<300; i++) {
-			String sentence = String.format("테스트 데이터입니다. : [%03d]", i);
-			this.registrationService.create(sentence);
+		for(int i=1; i<=300; i++) {
+			String script = String.format("테스트 데이터입니다. : [%03d]", i);
+			this.registrationService.create(script);
 		}
 	}
 

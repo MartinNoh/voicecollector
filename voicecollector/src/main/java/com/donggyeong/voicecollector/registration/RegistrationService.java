@@ -23,9 +23,9 @@ public class RegistrationService {
 		return this.registrationRepository.findAllBySearch(kw, pageable);
 	}
 	
-	public void create(String sentence) {
+	public void create(String script) {
 		Registration r= new Registration();
-		r.setSentence(sentence);
+		r.setScript(script);
 		this.registrationRepository.save(r);
 	}
 }
