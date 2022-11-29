@@ -6,7 +6,7 @@
 	<div class="row my-3">
 	
 		<div class="col-6">
-			<a data-bs-toggle="modal" href="#registrationModal" role="button" id="btnRegistration" class="btn btn-primary">스크립트 등록</a>
+			<a data-bs-toggle="modal" href="#registrationModal" role="button" id="btnRegistration" class="btn btn-success">스크립트 등록</a>
 		</div>
 		
 		<div class="col-6">
@@ -36,7 +36,7 @@
 		<tbody>
 			<tr class="text-center" th:each="registration, loop :  ${paging}">
 				<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
-				<td th:text="${registration.script}" class="text-start"></td>
+				<td class="text-start"><a th:href="@{|/registration/modify/${registration.id}|}" th:text="${registration.script}"></a></td>
 				<!-- 
 				<td><span th:if="${registration.email != null }" th:text="${registration.email.email}"></span></td>
 				 -->
@@ -93,28 +93,17 @@
 					<form th:action="@{/registration/create}" method="post" th:object="${registrationForm}">
 				        <div th:replace="form_errors :: formErrorsFragment"></div>
 						<div class="mb-3">
-							<label for="script" class="form-label">1. 단문 입력</label>
 							<div class="input-group">
 								<input type="text" name="script" class="form-control" placeholder="스크립트를 입력해주세요." autofocus>
 								<div class="input-group-append">
-									<button type="submit" class="btn btn-primary modal-button-confirm">등록</button>
+									<button type="submit" class="btn btn-success">등록</button>
 								</div>
 							</div>
 						</div>
+						
+						<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
+						<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
 					</form>
-					<!-- 
-					<form th:action="@{/registration/create}" method="post" th:object="${registrationForm}">
-						<div class="mb-3">
-							<label for="script" class="form-label">2. Excel 등록</label>
-							<div class="input-group d-flex justify-content-between">
-								<p style="vertical-align: middle;">*.xlsx 파일의 A열에 스크립트만 기입해주세요.</p>
-								<div class="input-group-append">
-									<button type="submit" class="btn btn-primary modal-button-confirm">등록</button>
-								</div>
-							</div>
-						</div>
-					</form>
-				 	-->
 				</div>
 
 			</div>
@@ -152,7 +141,7 @@
 	
 	// 등록 오류 시 모달 가져오기
 	window.onload = function(){
-		if(/*[[${#strings.equals(createError, 'Y')}]]*/ 'default'){
+		if(/*[[${#strings.equals(modalClick, 'Y')}]]*/ 'default'){
 			document.getElementById('btnRegistration').click();
 		}
 	}

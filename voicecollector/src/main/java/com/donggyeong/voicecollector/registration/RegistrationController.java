@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,10 +37,22 @@ public class RegistrationController {
 		model.addAttribute("kw", kw);
 		
 		if(bindingResult.hasErrors()) {
-			model.addAttribute("createError", 'Y');
+			model.addAttribute("modalClick", 'Y');
 			return "registration_list";
 		}
 		this.registrationService.create(registrationForm.getScript());
 		return "redirect:/registration/list";
+	}
+	
+	@GetMapping("/modify/{id}/{kw}/{page}")
+	public String modify(Model model, RegistrationForm registrationForm, @PathVariable("id") Integer id, @PathVariable("kw") String kw, @PathVariable("page") int page) {
+		Page<Registration> paging = this.registrationService.getList(page, kw);
+		model.addAttribute("paging", paging);
+		model.addAttribute("kw", kw);
+		Registration registration = this.registrationService.getRegistration(id);
+		registrationForm.setScript(registration.getScript());
+		model.addAttribute("modalClick", 'Y');
+		model.addAttribute("isModify", 'Y');
+		return "registration_list";
 	}
 }
