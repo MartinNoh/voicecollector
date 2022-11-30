@@ -9,7 +9,7 @@ const soundClips = document.querySelector('#soundClips');
 
 const canvas = document.querySelector('#audioVisualizer');
 
-const scriptSentenceId = document.querySelector('#scriptSentenceId').value;
+const scriptId = document.querySelector('#scriptId').value;
 let blob = null;
 let audioURL = null;
 let audioType = 'wav';
@@ -82,7 +82,7 @@ if (navigator.mediaDevices.getUserMedia) {
 			audio.classList.add('recorded');
 
 			const clipLabel = document.createElement('p');
-			const clipName = scriptSentenceId;
+			const clipName = scriptId;
 			clipLabel.textContent = clipName;
 
 			clipContainer.classList.add('clip');
@@ -130,10 +130,10 @@ if (navigator.mediaDevices.getUserMedia) {
 
 		async function uploadFile(base64Data) {
 			let formData = new FormData();
-			formData.append("scriptSentenceId", scriptSentenceId);
+			formData.append("scriptId", scriptId);
 			formData.append("audioType", audioType);
 			formData.append("base64Data", base64Data);
-			let response = await fetch('/upload', {
+			let response = await fetch('/collection/upload', {
 				method: "POST",
 				body: formData
 			});
