@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ public class RegistrationController {
 		Page<Registration> paging = this.registrationService.getList(page, kw);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
-		model.addAttribute("scriptId", "script_" + scriptId);
+		model.addAttribute("scriptId", scriptId);
 		if(bindingResult.hasErrors()) {
 			model.addAttribute("modalClick", "modify");
 			return "registration_list";
@@ -58,5 +59,14 @@ public class RegistrationController {
 		Registration registration = this.registrationService.getRegistration(Integer.parseInt(scriptId));
 		this.registrationService.modify(registration, script);
 		return "registration_list";
+	}
+	
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, RedirectAttributes re) {
+		re.addAttribute("page", page);
+		re.addAttribute("kw", kw);
+		Registration registration =this.registrationService.getRegistration(id);
+		this.registrationService.delete(registration);
+		return "redirect:/registration/list";
 	}
 }

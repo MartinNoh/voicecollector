@@ -45,4 +45,8 @@ public class RegistrationService {
 		registration.setScript(script);
 		this.registrationRepository.save(registration);
 	}
+	
+	public void delete(Registration registration) {
+		this.registrationRepository.delete(registration);
+	}
 }
