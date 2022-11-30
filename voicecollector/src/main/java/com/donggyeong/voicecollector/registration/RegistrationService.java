@@ -40,4 +40,9 @@ public class RegistrationService {
 			throw new DataNotFoundException("Data not found.");
 		}
 	}
+	
+	public void modify(Registration registration, String script) {
+		registration.setScript(script);
+		this.registrationRepository.save(registration);
+	}
 }

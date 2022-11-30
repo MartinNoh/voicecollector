@@ -37,22 +37,26 @@ public class RegistrationController {
 		model.addAttribute("kw", kw);
 		
 		if(bindingResult.hasErrors()) {
-			model.addAttribute("modalClick", 'Y');
+			model.addAttribute("modalClick", "create");
 			return "registration_list";
 		}
 		this.registrationService.create(registrationForm.getScript());
 		return "redirect:/registration/list";
 	}
 	
-	@GetMapping("/modify/{id}/{kw}/{page}")
-	public String modify(Model model, RegistrationForm registrationForm, @PathVariable("id") Integer id, @PathVariable("kw") String kw, @PathVariable("page") int page) {
+
+	@PostMapping("/modify")
+	public String modify(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @Valid RegistrationForm registrationForm, BindingResult bindingResult, @RequestParam("scriptId") String scriptId, @RequestParam("script") String script) {
 		Page<Registration> paging = this.registrationService.getList(page, kw);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
-		Registration registration = this.registrationService.getRegistration(id);
-		registrationForm.setScript(registration.getScript());
-		model.addAttribute("modalClick", 'Y');
-		model.addAttribute("isModify", 'Y');
+		model.addAttribute("scriptId", "script_" + scriptId);
+		if(bindingResult.hasErrors()) {
+			model.addAttribute("modalClick", "modify");
+			return "registration_list";
+		}
+		Registration registration = this.registrationService.getRegistration(Integer.parseInt(scriptId));
+		this.registrationService.modify(registration, script);
 		return "registration_list";
 	}
 }

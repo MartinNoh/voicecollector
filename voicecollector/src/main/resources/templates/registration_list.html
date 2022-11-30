@@ -36,7 +36,10 @@
 		<tbody>
 			<tr class="text-center" th:each="registration, loop :  ${paging}">
 				<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+				<!-- 
 				<td class="text-start"><a th:href="@{|/registration/modify/${registration.id}|}" th:text="${registration.script}"></a></td>
+				 -->
+				<td class="text-start"><a data-bs-toggle="modal" href="#registrationModifyModal" th:onclick="modifyScript([[${registration.id}]], [[${registration.script}]])" th:id="|script_${registration.id}|" th:text="${registration.script}"></a></td>
 				<!-- 
 				<td><span th:if="${registration.email != null }" th:text="${registration.email.email}"></span></td>
 				 -->
@@ -94,7 +97,7 @@
 				        <div th:replace="form_errors :: formErrorsFragment"></div>
 						<div class="mb-3">
 							<div class="input-group">
-								<input type="text" name="script" class="form-control" placeholder="스크립트를 입력해주세요." autofocus>
+								<input type="text" name="script" class="form-control" placeholder="스크립트를 입력해주세요." autofocus />
 								<div class="input-group-append">
 									<button type="submit" class="btn btn-success">등록</button>
 								</div>
@@ -110,7 +113,40 @@
 		</div>
 	</div>
 
+	<!-- 스크립트 수정 모달 -->
+	<div class="modal fade" id="registrationModifyModal" aria-hidden="true" aria-labelledby="registrationModifyModalLabel" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
 
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="registrationModifyModalLabel">
+						<b>스크립트 수정</b>
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body" id="modalModifyBody">
+					<form th:action="@{/registration/modify}" method="post" th:object="${registrationForm}">
+				        <div th:replace="form_errors :: formErrorsFragment"></div>
+						<div class="mb-3">
+							<div class="input-group">
+								<input type="text" name="script" id="inputScript" class="form-control" placeholder="스크립트를 입력해주세요." autofocus />
+								<input type="hidden" name="scriptId" id="inputScriptId" class="form-control"/>
+								<div class="input-group-append">
+									<button type="submit" class="btn btn-success">수정</button>
+								</div>
+							</div>
+						</div>
+						
+						<input type="hidden" id="kwModifyModal" name="kw" th:value="${kw}">
+						<input type="hidden" id="pageModifyModal" name="page" th:value="${paging.number}">
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	
 </div>
 
 
@@ -139,10 +175,12 @@
 		document.getElementById('btn_search').click();
 	}
 	
-	// 등록 오류 시 모달 가져오기
+	// 등록, 변경 오류 시 모달 가져오기
 	window.onload = function(){
-		if(/*[[${#strings.equals(modalClick, 'Y')}]]*/ 'default'){
+		if(/*[[${#strings.equals(modalClick, 'create')}]]*/ 'default'){
 			document.getElementById('btnRegistration').click();
+		} else if(/*[[${#strings.equals(modalClick, 'modify')}]]*/ 'default'){
+			document.getElementById(/*[[${scriptId}]]*/ 'default').click();
 		}
 	}
 	
@@ -150,6 +188,10 @@
 	$('.modal').on('shown.bs.modal', function() {
 	  $(this).find('[autofocus]').focus();
 	});
+	
+	// 스크립트 클릭하면 변경 모달 구성
+	function modifyScript(id, script){
+		document.getElementById('inputScriptId').value = id;
+		document.getElementById('inputScript').value = script;
+	}
 </script>
-
-</html>
