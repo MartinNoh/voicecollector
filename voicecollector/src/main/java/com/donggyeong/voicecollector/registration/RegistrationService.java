@@ -47,6 +47,7 @@ public class RegistrationService {
 	}
 	
 	public void delete(Registration registration) {
-		this.registrationRepository.delete(registration);
+		registration.setInUseYn("n");
+		this.registrationRepository.save(registration);
 	}
 }

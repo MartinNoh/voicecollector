@@ -198,9 +198,11 @@
 	
 	// 스크립트 삭제 버튼 클릭
 	function deleteScript() {
-		const scriptId = document.getElementById('inputScriptId').value;
-		const page = document.getElementById('page').value;
-		const kw = document.getElementById('kw').value;
-		location.href = "/registration/delete/" + scriptId + "?page=" + page + "&kw=" + kw;
+		if (window.confirm("정말 삭제하시겠습니까?")) {
+			const scriptId = document.getElementById('inputScriptId').value;
+			const page = document.getElementById('page').value;
+			const kw = document.getElementById('kw').value;
+			location.href = "/registration/delete/" + scriptId + "?page=" + page + "&kw=" + kw;
+		}
 	}
 </script>

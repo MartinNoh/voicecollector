@@ -13,6 +13,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
 			+ "from Registration r "
 			+ "where 1=1 "
 			+ "	and r.script like %:kw% "
+			+ " and r.inUseYn != 'n'"
 			)
 	Page<Registration> findAllBySearch(@Param("kw") String kw, Pageable pageable);
 }
