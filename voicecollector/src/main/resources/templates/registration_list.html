@@ -1,15 +1,13 @@
 <html layout:decorate="~{layout}">
 
-<div layout:fragment="content" class="container my-3">
+<div layout:fragment="content" class="container">
 
-
-	<div class="row my-3">
-	
-		<div class="col-6">
+	<div class="row">
+		<div class="col-lg-6">
 			<a data-bs-toggle="modal" href="#registrationModal" role="button" id="btnRegistration" class="btn btn-success">스크립트 등록</a>
 		</div>
 		
-		<div class="col-6">
+		<div class="col-lg-6">
 			<div class="input-group">
 				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="스크립트 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus >
 				<div class="input-group-append">
@@ -17,137 +15,161 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	
+	<div class="row my-4">
+		<div class="col-lg-12">
+			<table class="table table-hover">
+				<thead class="table-dark">
+					<tr class="text-center">
+						<th>번호</th>
+						<th style="width: 50%;">스크립트</th>
+						<!-- 
+						<th>작성자</th>
+						 -->
+						<th>등록일시</th>
+						<th>녹음완료</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="text-center" th:each="registration, loop :  ${paging}">
+						<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
+						<!-- 
+						<td class="text-start"><a th:href="@{|/registration/modify/${registration.id}|}" th:text="${registration.script}"></a></td>
+						 -->
+						<td class="text-start"><a data-bs-toggle="modal" href="#registrationModifyModal" th:onclick="modifyScript([[${registration.id}]], [[${registration.script}]])" th:id="|script_${registration.id}|" th:text="${registration.script}"></a></td>
+						<!-- 
+						<td><span th:if="${registration.email != null }" th:text="${registration.email.email}"></span></td>
+						 -->
+						<td th:text="${#temporals.format(registration.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+						<td th:text="${registration.workedYn}"></td>
+					</tr>
+					<tr class="text-center" th:if="${paging.isEmpty()}">
+						<td colspan="4">등록된 문장이 없습니다.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<!-- 페이징처리 시작 -->
+			<div th:if="${!paging.isEmpty()}">
+				<ul class="pagination justify-content-center">
+					<li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+						<a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
+					</li>
+					<li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
+							th:if="${(paging.number <= 2 and page < 5)
+		                	or (paging.number > 2 and page >= paging.number-2 and page <= paging.number+2)
+		                	or (paging.number >= paging.totalPages-2 and page > paging.totalPages-6)}"
+							th:classappend="${page == paging.number} ? 'active'" class="page-item">
+						<a th:text="${page + 1}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
+					</li>
+					<li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+						<a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+					</li>
+				</ul>
+			</div>
+			<!-- 페이징처리 끝 -->
+			
+			<form th:action="@{/registration/list}" method="get" id="searchForm">
+				<input type="hidden" id="kw" name="kw" th:value="${kw}">
+				<input type="hidden" id="page" name="page" th:value="${paging.number}">
+			</form>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+	
+			<!-- 스크립트 등록 모달 -->
+			<div class="modal fade" id="registrationModal" aria-hidden="true" aria-labelledby="registrationModalLabel" tabindex="-1">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
 		
-	</div>
-	
-	
-	<table class="table table-hover">
-		<thead class="table-dark">
-			<tr class="text-center">
-				<th>번호</th>
-				<th style="width: 50%;">스크립트</th>
-				<!-- 
-				<th>작성자</th>
-				 -->
-				<th>등록일시</th>
-				<th>녹음완료</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr class="text-center" th:each="registration, loop :  ${paging}">
-				<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
-				<!-- 
-				<td class="text-start"><a th:href="@{|/registration/modify/${registration.id}|}" th:text="${registration.script}"></a></td>
-				 -->
-				<td class="text-start"><a data-bs-toggle="modal" href="#registrationModifyModal" th:onclick="modifyScript([[${registration.id}]], [[${registration.script}]])" th:id="|script_${registration.id}|" th:text="${registration.script}"></a></td>
-				<!-- 
-				<td><span th:if="${registration.email != null }" th:text="${registration.email.email}"></span></td>
-				 -->
-				<td th:text="${#temporals.format(registration.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
-				<td th:text="${registration.workedYn}"></td>
-			</tr>
-			<tr class="text-center" th:if="${paging.isEmpty()}">
-				<td colspan="4">등록된 문장이 없습니다.</td>
-			</tr>
-		</tbody>
-	</table>
-
-
-	<!-- 페이징처리 시작 -->
-	<div th:if="${!paging.isEmpty()}">
-		<ul class="pagination justify-content-center">
-			<li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-				<a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
-			</li>
-			<li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
-					th:if="${(paging.number <= 2 and page < 5)
-                	or (paging.number > 2 and page >= paging.number-2 and page <= paging.number+2)
-                	or (paging.number >= paging.totalPages-2 and page > paging.totalPages-6)}"
-					th:classappend="${page == paging.number} ? 'active'" class="page-item">
-				<a th:text="${page + 1}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
-			</li>
-			<li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-				<a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
-			</li>
-		</ul>
-	</div>
-	<!-- 페이징처리 끝 -->
-
-
-	<form th:action="@{/registration/list}" method="get" id="searchForm">
-		<input type="hidden" id="kw" name="kw" th:value="${kw}">
-		<input type="hidden" id="page" name="page" th:value="${paging.number}">
-	</form>
-
-
-	<!-- 스크립트 등록 모달 -->
-	<div class="modal fade" id="registrationModal" aria-hidden="true" aria-labelledby="registrationModalLabel" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="registrationModalLabel">
-						<b>스크립트 등록</b>
-					</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-
-				<div class="modal-body" id="modalBody">
-					<form th:action="@{/registration/create}" method="post" th:object="${registrationForm}">
-				        <div th:replace="form_errors :: formErrorsFragment"></div>
-						<div class="mb-3">
-							<div class="input-group">
-								<input type="text" name="script" class="form-control" placeholder="스크립트를 입력해주세요." autofocus />
-								<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
-								<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
-						
-								<div class="input-group-append">
-									<button type="submit" class="btn btn-success">등록</button>
-								</div>
-							</div>
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="registrationModalLabel">
+								<b>스크립트 등록</b>
+							</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
-					</form>
-				</div>
-
-			</div>
-		</div>
-	</div>
-
-	<!-- 스크립트 변경 모달 -->
-	<div class="modal fade" id="registrationModifyModal" aria-hidden="true" aria-labelledby="registrationModifyModalLabel" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="registrationModifyModalLabel">
-						<b>스크립트 변경</b>
-					</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-
-				<div class="modal-body" id="modalModifyBody">
-					<form th:action="@{/registration/modify}" method="post" th:object="${registrationForm}">
-				        <div th:replace="form_errors :: formErrorsFragment"></div>
-						<div class="mb-3">
-							<div class="input-group">
-								<input type="text" name="script" id="inputScript" class="form-control" placeholder="스크립트를 입력해주세요." autofocus />
-								<input type="hidden" name="scriptId" id="inputScriptId" class="form-control"/>
-								<input type="hidden" id="kwModifyModal" name="kw" th:value="${kw}">
-								<input type="hidden" id="pageModifyModal" name="page" th:value="${paging.number}">
+		
+						<div class="modal-body" id="modalBody">
+							<form th:action="@{/registration/create}" method="post" th:object="${registrationForm}">
+						        <div th:replace="form_errors :: formErrorsFragment"></div>
+								<div class="mb-3">
+									<label for="script" class="form-label">1. 단문 입력</label>
+									<div class="input-group">
+										<input type="text" name="script" class="form-control" placeholder="스크립트를 입력해주세요." autofocus />
+										<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
+										<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
 								
-								<div class="input-group-append">
-									<button type="submit" class="btn btn-success">수정</button>
-									<a class="btn btn-danger" th:onclick="deleteScript()" th:text="삭제"></a>
+										<div class="input-group-append">
+											<button type="submit" class="btn btn-success">등록</button>
+										</div>
+									</div>
 								</div>
-							</div>
+							</form>
+							<br/>
+							<form th:action="@{/registration/read/excel}" method="post">
+								<div class="mb-3">
+									<label for="excelContents" class="form-label">2. 엑셀 입력 (A1셀은 'script' 입력, A2셀부터 아래로 스크립트만 나열.)</label>
+									<div class="input-group d-flex justify-content-between">
+										<input type="file" onchange="readExcel()" style="margin-top: 0.3rem">
+										<input type="hidden" id="excelContents" name="excelContents">
+										<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
+										<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
+								
+										<div class="input-group-append">
+											<button type="submit" class="btn btn-success">등록</button>
+										</div>
+									</div>
+								</div>
+							</form>
 						</div>
-					</form>
+		
+					</div>
 				</div>
-
+			</div>
+	
+			<!-- 스크립트 변경 모달 -->
+			<div class="modal fade" id="registrationModifyModal" aria-hidden="true" aria-labelledby="registrationModifyModalLabel" tabindex="-1">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+		
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="registrationModifyModalLabel">
+								<b>스크립트 변경</b>
+							</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+		
+						<div class="modal-body" id="modalModifyBody">
+							<form th:action="@{/registration/modify}" method="post" th:object="${registrationForm}">
+						        <div th:replace="form_errors :: formErrorsFragment"></div>
+								<div class="mb-3">
+									<div class="input-group">
+										<input type="text" name="script" id="inputScript" class="form-control" placeholder="스크립트를 입력해주세요." autofocus />
+										<input type="hidden" name="scriptId" id="inputScriptId" class="form-control"/>
+										<input type="hidden" id="kwModifyModal" name="kw" th:value="${kw}">
+										<input type="hidden" id="pageModifyModal" name="page" th:value="${paging.number}">
+										
+										<div class="input-group-append">
+											<button type="submit" class="btn btn-success">수정</button>
+											<a class="btn btn-danger" th:onclick="deleteScript()" th:text="삭제"></a>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+		
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-	
 </div>
 
 
@@ -170,7 +192,6 @@
 		document.getElementById('searchForm').submit();
 	});
 	
-
 	// 검색칸 enter 이벤트 처리
 	function enterSearchBtn() {
 		document.getElementById('btn_search').click();
@@ -182,6 +203,9 @@
 			document.getElementById('btnRegistration').click();
 		} else if(/*[[${#strings.equals(modalClick, 'modify')}]]*/ 'default'){
 			document.getElementById(/*[[|script_${scriptId}|]]*/ 'default').click();
+		} else if(/*[[${#strings.equals(modalClick, 'readExcel')}]]*/ 'default') {
+			document.getElementbyId('btnRegistration').click();
+			alert("등록을 실피해였습니다. 업로드 파일을 확인해주세요.");
 		}
 	}
 	
@@ -204,5 +228,24 @@
 			const kw = document.getElementById('kw').value;
 			location.href = "/registration/delete/" + scriptId + "?page=" + page + "&kw=" + kw;
 		}
+	}
+	
+	// 엑셀 등록 버튼 클릭
+	function readExcel() {
+		let stringJson = "";
+	    let input = event.target;
+	    let reader = new FileReader();
+	    reader.onload = function () {
+	        let data = reader.result;
+	        let workBook = XLSX.read(data, { type: 'binary' });
+	        workBook.SheetNames.forEach(function (sheetName) {
+	            console.log('SheetName: ' + sheetName);
+	            let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+	            stringJson = JSON.stringify(rows);
+	            console.log(stringJson);
+	    	    document.getElementById('excelContents').value = stringJson;
+	        })
+	    };
+	    reader.readAsBinaryString(input.files[0]);
 	}
 </script>

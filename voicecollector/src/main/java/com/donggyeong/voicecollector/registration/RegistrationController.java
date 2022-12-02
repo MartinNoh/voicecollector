@@ -1,7 +1,5 @@
 package com.donggyeong.voicecollector.registration;
 
-import java.security.Principal;
-
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Controller
 public class RegistrationController {
-	
+
 	private final RegistrationService registrationService;
 
 	@RequestMapping("/list")
@@ -45,7 +43,25 @@ public class RegistrationController {
 		return "redirect:/registration/list";
 	}
 	
+	@PostMapping("/read/excel")
+	public String readExcel(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "excelContents", defaultValue = "") String excelContents, @Valid RegistrationForm registrationForm, BindingResult bindingResult) {
+		Page<Registration> paging = this.registrationService.getList(page, kw);
+		model.addAttribute("paging", paging);
+		model.addAttribute("kw", kw);
 
+		this.registrationService.readExcel(excelContents);
+		/* To DO : 에러 처리 
+		try {
+			this.registrationService.readExcel(excelContents);
+		} catch(Exception e) {
+			e.printStackTrace();
+			model.addAttribute("modalClick", "readExcel");
+			return "registration_list";
+		}
+		*/
+		return "redirect:/registration/list";
+	}
+	
 	@PostMapping("/modify")
 	public String modify(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @Valid RegistrationForm registrationForm, BindingResult bindingResult, @RequestParam("scriptId") String scriptId, @RequestParam("script") String script) {
 		Page<Registration> paging = this.registrationService.getList(page, kw);

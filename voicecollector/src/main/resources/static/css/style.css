@@ -6,12 +6,15 @@ body {
 	font-family: 'NanumSquare', sans-serif;
 }
 
+.row {
+	margin: 0 4%;
+}
+
 .container {
-	padding: 0 10%;
+	margin-top: 15vh;
 }
 
 #subtitle {
-	margin-top: 10vh;
 	height: 10vh;
 }
 
