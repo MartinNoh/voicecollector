@@ -16,4 +16,10 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
 			+ " and r.inUseYn != 'n'"
 			)
 	Page<Registration> findAllBySearch(@Param("kw") String kw, Pageable pageable);
+	
+	@Query("select "
+			+ "count(distinct r) "
+			+ "from Registration r "
+			)
+	Integer getTotalRegistrationCnt();
 }

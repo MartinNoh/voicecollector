@@ -1,218 +1,214 @@
-// set up basic variables for app
+/**
+* Template Name: Tempo - v4.9.0
+* Template URL: https://bootstrapmade.com/tempo-free-onepage-bootstrap-theme/
+* Author: BootstrapMade.com
+* License: https://bootstrapmade.com/license/
+*/
+(function() {
+  "use strict";
 
-const record = document.querySelector('#recordBtn');
-const stop = document.querySelector('#stopBtn');
-const play = document.querySelector('#playBtn');
-const next = document.querySelector('#nextBtn');
+  /**
+   * Easy selector helper function
+   */
+  const select = (el, all = false) => {
+    el = el.trim()
+    if (all) {
+      return [...document.querySelectorAll(el)]
+    } else {
+      return document.querySelector(el)
+    }
+  }
 
-const soundClips = document.querySelector('#soundClips');
+  /**
+   * Easy event listener function
+   */
+  const on = (type, el, listener, all = false) => {
+    let selectEl = select(el, all)
+    if (selectEl) {
+      if (all) {
+        selectEl.forEach(e => e.addEventListener(type, listener))
+      } else {
+        selectEl.addEventListener(type, listener)
+      }
+    }
+  }
 
-const canvas = document.querySelector('#audioVisualizer');
+  /**
+   * Easy on scroll event listener 
+   */
+  const onscroll = (el, listener) => {
+    el.addEventListener('scroll', listener)
+  }
 
-const scriptId = document.querySelector('#scriptId').value;
-let blob = null;
-let audioURL = null;
-let audioType = 'wav';
+  /**
+   * Navbar links active state on scroll
+   */
+  let navbarlinks = select('#navbar .scrollto', true)
+  const navbarlinksActive = () => {
+    let position = window.scrollY + 200
+    navbarlinks.forEach(navbarlink => {
+      if (!navbarlink.hash) return
+      let section = select(navbarlink.hash)
+      if (!section) return
+      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
+        navbarlink.classList.add('active')
+      } else {
+        navbarlink.classList.remove('active')
+      }
+    })
+  }
+  window.addEventListener('load', navbarlinksActive)
+  onscroll(document, navbarlinksActive)
 
-// disable stop button while not recording
+  /**
+   * Scrolls to an element with header offset
+   */
+  const scrollto = (el) => {
+    let header = select('#header')
+    let offset = header.offsetHeight
 
-//stop.disabled = true;
+    if (!header.classList.contains('header-scrolled')) {
+      offset -= 16
+    }
 
-// visualiser setup - create web audio api context and canvas
+    let elementPos = select(el).offsetTop
+    window.scrollTo({
+      top: elementPos - offset,
+      behavior: 'smooth'
+    })
+  }
 
-let audioCtx;
-const canvasCtx = canvas.getContext("2d");
+  /**
+   * Toggle .header-scrolled class to #header when page is scrolled
+   */
+  let selectHeader = select('#header')
+  if (selectHeader) {
+    const headerScrolled = () => {
+      if (window.scrollY > 100) {
+        selectHeader.classList.add('header-scrolled')
+      } else {
+        selectHeader.classList.remove('header-scrolled')
+      }
+    }
+    window.addEventListener('load', headerScrolled)
+    onscroll(document, headerScrolled)
+  }
 
-//main block for doing the audio recording
+  /**
+   * Back to top button
+   */
+  let backtotop = select('.back-to-top')
+  if (backtotop) {
+    const toggleBacktotop = () => {
+      if (window.scrollY > 100) {
+        backtotop.classList.add('active')
+      } else {
+        backtotop.classList.remove('active')
+      }
+    }
+    window.addEventListener('load', toggleBacktotop)
+    onscroll(document, toggleBacktotop)
+  }
 
-if (navigator.mediaDevices.getUserMedia) {
-	console.log('getUserMedia supported.');
+  /**
+   * Mobile nav toggle
+   */
+  on('click', '.mobile-nav-toggle', function(e) {
+    select('#navbar').classList.toggle('navbar-mobile')
+    this.classList.toggle('bi-list')
+    this.classList.toggle('bi-x')
+  })
 
-	const constraints = { audio: true };
-	let chunks = [];
+  /**
+   * Mobile nav dropdowns activate
+   */
+  on('click', '.navbar .dropdown > a', function(e) {
+    if (select('#navbar').classList.contains('navbar-mobile')) {
+      e.preventDefault()
+      this.nextElementSibling.classList.toggle('dropdown-active')
+    }
+  }, true)
 
-	let onSuccess = function(stream) {
-		const mediaRecorder = new MediaRecorder(stream);
+  /**
+   * Scrool with ofset on links with a class name .scrollto
+   */
+  on('click', '.scrollto', function(e) {
+    if (select(this.hash)) {
+      e.preventDefault()
 
-		visualize(stream);
+      let navbar = select('#navbar')
+      if (navbar.classList.contains('navbar-mobile')) {
+        navbar.classList.remove('navbar-mobile')
+        let navbarToggle = select('.mobile-nav-toggle')
+        navbarToggle.classList.toggle('bi-list')
+        navbarToggle.classList.toggle('bi-x')
+      }
+      scrollto(this.hash)
+    }
+  }, true)
 
-		record.onclick = function() {
+  /**
+   * Porfolio isotope and filter
+   */
+  window.addEventListener('load', () => {
+    let portfolioContainer = select('.portfolio-container');
+    if (portfolioContainer) {
+      let portfolioIsotope = new Isotope(portfolioContainer, {
+        itemSelector: '.portfolio-item',
+        layoutMode: 'fitRows'
+      });
 
-			if (audioURL != null) window.URL.revokeObjectURL(audioURL);
+      let portfolioFilters = select('#portfolio-flters li', true);
 
-			mediaRecorder.start();
-			console.log(mediaRecorder.state);
-			console.log("recorder started");
-			record.style.background = "red";
+      on('click', '#portfolio-flters li', function(e) {
+        e.preventDefault();
+        portfolioFilters.forEach(function(el) {
+          el.classList.remove('filter-active');
+        });
+        this.classList.add('filter-active');
 
-			stop.disabled = false;
-			record.disabled = true;
-			play.disabled = true;
-			next.disabled = true;
+        portfolioIsotope.arrange({
+          filter: this.getAttribute('data-filter')
+        });
 
-			const clip = document.querySelector('.clip');
-			if (clip != null) clip.remove();
+      }, true);
+    }
 
-			play.style.display = 'none';
-			stop.style.display = 'block';
-		}
+  });
 
-		stop.onclick = function() {
-			mediaRecorder.stop();
-			console.log(mediaRecorder.state);
-			console.log("recorder stopped");
-			record.style.background = "";
-			record.style.color = "";
-			// mediaRecorder.requestData();
+  /**
+   * Initiate portfolio lightbox 
+   */
+  const portfolioLightbox = GLightbox({
+    selector: '.portfolio-lightbox'
+  });
 
-			stop.disabled = true;
-			record.disabled = false;
-			play.disabled = false;
-			next.disabled = false;
+  /**
+   * Portfolio details slider
+   */
+  new Swiper('.portfolio-details-slider', {
+    speed: 400,
+    loop: true,
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      type: 'bullets',
+      clickable: true
+    }
+  });
 
-			play.style.display = 'block';
-			stop.style.display = 'none';
-		}
+  /**
+   * Scroll with ofset on page load with hash links in the url
+   */
+  window.addEventListener('load', () => {
+    if (window.location.hash) {
+      if (select(window.location.hash)) {
+        scrollto(window.location.hash)
+      }
+    }
+  });
 
-		mediaRecorder.onstop = function(e) {
-			console.log("data available after MediaRecorder.stop() called.");
-
-			const clipContainer = document.createElement('article');
-			const audio = document.createElement('audio');
-			audio.classList.add('recorded');
-
-			const clipLabel = document.createElement('p');
-			const clipName = scriptId;
-			clipLabel.textContent = clipName;
-
-			clipContainer.classList.add('clip');
-			audio.setAttribute('controls', '');
-
-			clipContainer.appendChild(audio);
-			clipContainer.appendChild(clipLabel);
-			soundClips.appendChild(clipContainer);
-
-			audio.controls = true;
-			blob = new Blob(chunks, { 'type': 'audio/' + audioType + '; codecs=opus' }); // audio/ogg, audio/wav, audio/mp3
-			chunks = [];
-			audioURL = window.URL.createObjectURL(blob);
-			audio.src = audioURL;
-			console.log("recorder stopped");
-		}
-
-		play.onclick = function() {
-			const audio = document.querySelector('.recorded');
-			if (audio != null) {
-				audio.play();
-				
-				play.disabled = true;
-				play.style.background = "black";
-				
-				audio.onended = function() {
-					play.disabled = false;
-					play.style.background = "";
-					play.style.color = "";
-				};
-			}
-		}
-
-
-		next.onclick = function() {
-			const reader = new FileReader();
-			reader.readAsDataURL(blob);
-			reader.onloadend = () => {
-				const base64Data = reader.result;
-				console.log(base64Data)
-
-				uploadFile(base64Data)
-			}
-		}
-
-		async function uploadFile(base64Data) {
-			let formData = new FormData();
-			formData.append("scriptId", scriptId);
-			formData.append("audioType", audioType);
-			formData.append("base64Data", base64Data);
-			let response = await fetch('/collection/upload', {
-				method: "POST",
-				body: formData
-			});
-
-			if (response.status == 200) {
-				alert("정상적으로 업로드되었습니다.");
-			} else {
-				alert("업로드 문제가 발생하였습니다.");
-			}
-		}
-
-		mediaRecorder.ondataavailable = function(e) {
-			chunks.push(e.data);
-		}
-	}
-
-	let onError = function(err) {
-		console.log('The following error occured: ' + err);
-	}
-
-	navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
-
-} else {
-	console.log('getUserMedia not supported on your browser!');
-}
-
-function visualize(stream) {
-	if (!audioCtx) {
-		audioCtx = new AudioContext();
-	}
-
-	const source = audioCtx.createMediaStreamSource(stream);
-
-	const analyser = audioCtx.createAnalyser();
-	analyser.fftSize = 2048;
-	const bufferLength = analyser.frequencyBinCount;
-	const dataArray = new Uint8Array(bufferLength);
-
-	source.connect(analyser);
-	//analyser.connect(audioCtx.destination);
-
-	draw()
-
-	function draw() {
-		const WIDTH = canvas.width
-		const HEIGHT = canvas.height;
-
-		requestAnimationFrame(draw);
-
-		analyser.getByteTimeDomainData(dataArray);
-
-		canvasCtx.fillStyle = 'rgb(255, 255, 255)';
-		canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-
-		canvasCtx.lineWidth = 2;
-		canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
-
-		canvasCtx.beginPath();
-
-		let sliceWidth = WIDTH * 1.0 / bufferLength;
-		let x = 0;
-
-
-		for (let i = 0; i < bufferLength; i++) {
-
-			let v = dataArray[i] / 128.0;
-			let y = v * HEIGHT / 2;
-
-			if (i === 0) {
-				canvasCtx.moveTo(x, y);
-			} else {
-				canvasCtx.lineTo(x, y);
-			}
-
-			x += sliceWidth;
-		}
-
-		canvasCtx.lineTo(canvas.width, canvas.height / 2);
-		canvasCtx.stroke();
-
-	}
-}
+})()

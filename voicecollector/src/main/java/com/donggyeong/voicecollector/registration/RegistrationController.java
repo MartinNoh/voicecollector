@@ -1,6 +1,7 @@
 package com.donggyeong.voicecollector.registration;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,7 @@ public class RegistrationController {
 
 	private final RegistrationService registrationService;
 
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/list")
 	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, RegistrationForm registrationForm) {
 		Page<Registration> paging = this.registrationService.getList(page, kw);
@@ -29,6 +31,7 @@ public class RegistrationController {
 		return "registration_list";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create")
 	public String create(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @Valid RegistrationForm registrationForm, BindingResult bindingResult) {
 		Page<Registration> paging = this.registrationService.getList(page, kw);
@@ -43,6 +46,7 @@ public class RegistrationController {
 		return "redirect:/registration/list";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/read/excel")
 	public String readExcel(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "excelContents", defaultValue = "") String excelContents, @Valid RegistrationForm registrationForm, BindingResult bindingResult) {
 		Page<Registration> paging = this.registrationService.getList(page, kw);
@@ -62,6 +66,7 @@ public class RegistrationController {
 		return "redirect:/registration/list";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify")
 	public String modify(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @Valid RegistrationForm registrationForm, BindingResult bindingResult, @RequestParam("scriptId") String scriptId, @RequestParam("script") String script) {
 		Page<Registration> paging = this.registrationService.getList(page, kw);
@@ -77,6 +82,7 @@ public class RegistrationController {
 		return "registration_list";
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, RedirectAttributes re) {
 		re.addAttribute("page", page);

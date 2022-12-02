@@ -18,4 +18,11 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			)
 	Page<Collection> findAllBySearch(@Param("kw") String kw, Pageable pageable);
 	*/
+	
+	@Query("select "
+			+ "count(c) "
+			+ "from Collection c "
+			+ ""
+			)
+	Integer getTotalCollectionCnt();
 }

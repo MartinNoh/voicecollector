@@ -50,6 +50,11 @@ dependencies {
     
     // ffmpeg
     implementation 'net.bramp.ffmpeg:ffmpeg:0.1'
+    
+    // spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE'
+
 }
 
 tasks.named('test') {

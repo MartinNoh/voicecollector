@@ -74,4 +74,8 @@ public class RegistrationService {
 		registration.setInUseYn("n");
 		this.registrationRepository.save(registration);
 	}
+	
+	public Integer getScriptCnt() {
+		return this.registrationRepository.getTotalRegistrationCnt();
+	}
 }

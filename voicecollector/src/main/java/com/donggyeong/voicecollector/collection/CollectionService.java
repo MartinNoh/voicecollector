@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.donggyeong.voicecollector.registration.RegistrationRepository;
+
 import lombok.RequiredArgsConstructor;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
@@ -26,6 +28,10 @@ public class CollectionService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final CollectionRepository collectionRepository;
 	
+	
+	public Integer getRecordCnt() {
+		return collectionRepository.getTotalCollectionCnt();
+	}
 	
 	@Value("${audio.base.path}")
 	private String audioBasePath;
