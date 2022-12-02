@@ -3,6 +3,7 @@ package com.donggyeong.voicecollector.collection;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +18,7 @@ public class CollectionController {
 	private final CollectionService collectionService;
 	
 	@RequestMapping("/record")
-	public String record() {
+	public String record(Model model) {
 		return "collection_record";
 	}	
 	

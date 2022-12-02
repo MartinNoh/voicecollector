@@ -28,7 +28,6 @@
 						<th>작성자</th>
 						 -->
 						<th>등록일시</th>
-						<th>녹음완료</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -42,7 +41,6 @@
 						<td><span th:if="${registration.email != null }" th:text="${registration.email.email}"></span></td>
 						 -->
 						<td th:text="${#temporals.format(registration.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
-						<td th:text="${registration.workedYn}"></td>
 					</tr>
 					<tr class="text-center" th:if="${paging.isEmpty()}">
 						<td colspan="4">등록된 문장이 없습니다.</td>

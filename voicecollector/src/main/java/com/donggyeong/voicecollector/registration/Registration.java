@@ -25,9 +25,6 @@ public class Registration extends BasetimeEntity{
 	private String script;
 	
 	@Column(nullable = false, columnDefinition = "char")
-	private String workedYn;
-	
-	@Column(nullable = false, columnDefinition = "char")
 	private String inUseYn;
 	
 	/*
@@ -37,7 +34,6 @@ public class Registration extends BasetimeEntity{
 	
 	@PrePersist
 	public void prePersist() {
-		this.workedYn = this.workedYn == null ? "n" : this.workedYn;
 		this.inUseYn = this.inUseYn == null ? "y" : this.inUseYn;
 	}
 }
