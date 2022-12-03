@@ -16,7 +16,8 @@ body {
 }
 
 .container {
-	margin-top: 10vh;
+	margin-top: 12vh;
+	max-width: 80% !important;
 }
 
 #subtitle {
@@ -113,6 +114,10 @@ body {
  	display: flex;
   	justify-content: space-between;
  }
+ 
+ .table-script {
+ 	color: gray !important;
+}
  
 /*--------------------------------------------------------------
 # collection

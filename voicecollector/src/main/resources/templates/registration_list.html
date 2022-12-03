@@ -36,7 +36,7 @@
 						<!-- 
 						<td class="text-start"><a th:href="@{|/registration/modify/${registration.id}|}" th:text="${registration.script}"></a></td>
 						 -->
-						<td class="text-start"><a data-bs-toggle="modal" href="#registrationModifyModal" th:onclick="modifyScript([[${registration.id}]], [[${registration.script}]])" th:id="|script_${registration.id}|" th:text="${registration.script}"></a></td>
+						<td class="text-start"><a class="table-script" data-bs-toggle="modal" href="#registrationModifyModal" th:onclick="modifyScript([[${registration.id}]], [[${registration.script}]])" th:id="|script_${registration.id}|" th:text="${registration.script}"></a></td>
 						<!-- 
 						<td><span th:if="${registration.email != null }" th:text="${registration.email.email}"></span></td>
 						 -->
