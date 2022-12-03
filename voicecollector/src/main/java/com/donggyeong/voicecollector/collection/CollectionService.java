@@ -33,8 +33,8 @@ public class CollectionService {
 		return collectionRepository.getTotalCollectionCnt();
 	}
 	
-	@Value("${audio.base.path}")
-	private String audioBasePath;
+	@Value("${upload.base.path}")
+	private String uploadBasePath;
 	
 	@Value("${ffmpeg.source.path}")
 	private String ffmpegSourcePath;
@@ -46,12 +46,12 @@ public class CollectionService {
     	
     	byte[] pcmData = Base64.getDecoder().decode(base64Data.split(",")[1]);
     	
-    	// 업로드할 디렉토리 생성
-    	String dirPath = audioBasePath + scriptId + "/";
+    	// make directory
+    	String dirPath = uploadBasePath + "audio/" + scriptId + "/";
         File dir = new File(dirPath);
-        if (dir.mkdir())	logger.info("Created successfully: " + dirPath);
+        if (dir.mkdirs())	logger.info("Created successfully: " + dirPath);
         
-        // pcm 파일 업로드
+        // pcm file upload
     	String filePath = dirPath + scriptId + "_" + getCurrentDateTime();
     	String pcmFilePath = filePath + ".pcm";
     	File pcmFile = new File(pcmFilePath);
@@ -59,6 +59,7 @@ public class CollectionService {
         os.write(pcmData);
         os.close();
 
+        // ffmpeg convert pcm to wav
         String wavFilePath = filePath + ".wav";
         FFmpeg ffmpeg = new FFmpeg(ffmpegSourcePath + "ffmpeg");
         FFprobe ffprobe = new FFprobe(ffmpegSourcePath + "ffprobe");
@@ -75,6 +76,14 @@ public class CollectionService {
         
         FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
         executor.createJob(builder).run();
+        
+        // delete pcm file
+        if(pcmFile.exists()) {
+        	if(pcmFile.delete())	logger.info("Successfully deleted PCM file.");
+        	else		logger.info("File deletion failed.");
+        }else {
+        	logger.info("Not found PCM file.");
+        }
 	}
 
 	public static String getCurrentDateTime() {

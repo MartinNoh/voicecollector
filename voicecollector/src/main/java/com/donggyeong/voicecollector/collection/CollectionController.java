@@ -32,7 +32,6 @@ public class CollectionController {
 		return "collection_record";
 	}	
 	
-	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/upload")
 	public ResponseEntity<?> handleFileUpload(@RequestParam("scriptId") String scriptId, @RequestParam("audioType") String audioType, @RequestParam("base64Data") String base64Data) {
 	    try {
