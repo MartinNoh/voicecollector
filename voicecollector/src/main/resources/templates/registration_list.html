@@ -24,9 +24,7 @@
 					<tr class="text-center">
 						<th>번호</th>
 						<th style="width: 50%;">스크립트</th>
-						<!-- 
 						<th>작성자</th>
-						 -->
 						<th>등록일시</th>
 					</tr>
 				</thead>
@@ -37,9 +35,7 @@
 						<td class="text-start"><a th:href="@{|/registration/modify/${registration.id}|}" th:text="${registration.script}"></a></td>
 						 -->
 						<td class="text-start"><a class="table-script" data-bs-toggle="modal" href="#registrationModifyModal" th:onclick="modifyScript([[${registration.id}]], [[${registration.script}]])" th:id="|script_${registration.id}|" th:text="${registration.script}"></a></td>
-						<!-- 
-						<td><span th:if="${registration.email != null }" th:text="${registration.email.email}"></span></td>
-						 -->
+						<td><span th:if="${registration.writer != null }" th:text="${registration.writer.email}"></span></td>
 						<td th:text="${#temporals.format(registration.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
 					</tr>
 					<tr class="text-center" th:if="${paging.isEmpty()}">
@@ -56,6 +52,9 @@
 			<div th:if="${!paging.isEmpty()}">
 				<ul class="pagination justify-content-center">
 					<li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+						<a class="page-link" href="javascript:void(0)" th:data-page="${0}"><span>처음</span></a>
+					</li>
+					<li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
 						<a class="page-link" href="javascript:void(0)" th:data-page="${paging.number-1}"><span>이전</span></a>
 					</li>
 					<li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}"
@@ -67,6 +66,9 @@
 					</li>
 					<li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
 						<a class="page-link" href="javascript:void(0)" th:data-page="${paging.number+1}"><span>다음</span></a>
+					</li>
+					<li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+						<a class="page-link" href="javascript:void(0)" th:data-page="${paging.totalPages-1}"><span>끝</span></a>
 					</li>
 				</ul>
 			</div>
@@ -115,7 +117,7 @@
 								<div class="mb-3">
 									<label for="excelContents" class="form-label">2. 엑셀 입력 (A1셀 'script' 입력, A2셀부터 아래로 스크립트 나열.)</label>
 									<div class="input-group d-flex justify-content-between">
-										<input type="file" onchange="readExcel()" style="margin-top: 0.3rem">
+										<input type="file" id="inputFile" onchange="readExcel()" style="margin-top: 0.3rem">
 										<input type="hidden" id="excelContents" name="excelContents">
 										<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
 										<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
@@ -230,20 +232,24 @@
 	
 	// 엑셀 등록 버튼 클릭
 	function readExcel() {
-		let stringJson = "";
-	    let input = event.target;
-	    let reader = new FileReader();
-	    reader.onload = function () {
-	        let data = reader.result;
-	        let workBook = XLSX.read(data, { type: 'binary' });
-	        workBook.SheetNames.forEach(function (sheetName) {
-	            console.log('SheetName: ' + sheetName);
-	            let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-	            stringJson = JSON.stringify(rows);
-	            console.log(stringJson);
-	    	    document.getElementById('excelContents').value = stringJson;
-	        })
-	    };
-	    reader.readAsBinaryString(input.files[0]);
+		if (window.confirm("등록 버튼을 누르고 잠시 기다려주세요.")) {
+			let stringJson = "";
+		    let input = event.target;
+		    let reader = new FileReader();
+		    reader.onload = function () {
+		        let data = reader.result;
+		        let workBook = XLSX.read(data, { type: 'binary' });
+		        workBook.SheetNames.forEach(function (sheetName) {
+		            console.log('SheetName: ' + sheetName);
+		            let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+		            stringJson = JSON.stringify(rows);
+		            console.log(stringJson);
+		    	    document.getElementById('excelContents').value = stringJson;
+		        })
+		    };
+		    reader.readAsBinaryString(input.files[0]);
+		} else {
+			document.getElementById("inputFile").value = null;	
+		}
 	}
 </script>

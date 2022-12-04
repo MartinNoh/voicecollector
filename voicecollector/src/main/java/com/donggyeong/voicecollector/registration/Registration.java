@@ -1,6 +1,7 @@
 package com.donggyeong.voicecollector.registration;
 
 import com.donggyeong.voicecollector.BasetimeEntity;
+import com.donggyeong.voicecollector.user.SiteUser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,10 +28,8 @@ public class Registration extends BasetimeEntity{
 	@Column(nullable = false, columnDefinition = "char")
 	private String inUseYn;
 	
-	/*
 	@ManyToOne
-	private SiteUser email;
-	*/
+	private SiteUser writer;
 	
 	@PrePersist
 	public void prePersist() {

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.donggyeong.voicecollector.DataNotFoundException;
+import com.donggyeong.voicecollector.user.SiteUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,25 +35,26 @@ public class RegistrationService {
 		return this.registrationRepository.findAllBySearch(kw, pageable);
 	}
 	
-	public void create(String script) {
+	public void create(String script, SiteUser writer) {
 		Registration r= new Registration();
 		r.setScript(script);
+		r.setWriter(writer);
 		this.registrationRepository.save(r);
 	}
 	
-	public void readExcel(String excelContents) {
+	public void readExcel(String excelContents, SiteUser writer) {
 		JSONArray jsonArr = new JSONArray();
 		JSONParser parser =  new JSONParser();
 		try {
 			jsonArr = (JSONArray)parser.parse(excelContents);
 		} catch (ParseException e) {
 			e.printStackTrace();
-			logger.info("엑셀 업로드를 실패 하였습니다!");
+			logger.info("엑셀 JSON 파싱을 실패 하였습니다!");
 		}
 		for(int i=0; i<jsonArr.size();i ++) {
 			JSONObject jsonObj = (JSONObject) jsonArr.get(i);
 			String script = (String) jsonObj.get("script");
-			create(script);
+			create(script, writer);
 		}
 	}
 	
