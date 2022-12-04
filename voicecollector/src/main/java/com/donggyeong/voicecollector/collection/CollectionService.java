@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -13,10 +14,15 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.donggyeong.voicecollector.registration.Registration;
 import com.donggyeong.voicecollector.registration.RegistrationRepository;
+import com.donggyeong.voicecollector.registration.RegistrationService;
 import com.donggyeong.voicecollector.user.SiteUser;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +36,7 @@ import net.bramp.ffmpeg.builder.FFmpegBuilder;
 public class CollectionService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final RegistrationService registrationService;	
 	private final CollectionRepository collectionRepository;
 	private final RegistrationRepository registrationRepository;
 	
@@ -105,7 +112,7 @@ public class CollectionService {
         
         // insert into db
         Collection c = new Collection();
-        c.setScriptId(Integer.parseInt(scriptId));
+        c.setScript(this.registrationService.getRegistration(Integer.parseInt(scriptId)));
         c.setBase64Data(base64Data);
         c.setDirPath(dirPath);
         c.setFileName(fileName);
@@ -120,5 +127,12 @@ public class CollectionService {
 		String pattern = "yyyyMMddHHmmss";
 		SimpleDateFormat formatter = new SimpleDateFormat(pattern, currentLocale);
 		return formatter.format(today);
+	}
+	
+	public Page<Collection> getList(int page, String kw) {
+		List<Sort.Order> sorts = new ArrayList<>();
+		sorts.add(Sort.Order.desc("createdDate"));
+		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+		return this.collectionRepository.findAllBySearch(kw, pageable);
 	}
 }

@@ -3,10 +3,14 @@
 	
 	<ul class="navbar-nav mr-auto" style="margin-right: 10%;">
 	    <li class="nav-item">
+	      <a class="nav-link" th:href="@{/registration/list}">대본 관리</a>
+      	</li>
+	    <li class="nav-item">
 	      <a class="nav-link" th:href="@{/collection/record}">녹음하기</a>
 	    </li>
 	    <li class="nav-item">
-	      <a class="nav-link" th:href="@{/registration/list}">작업내역</a>
+	      <a class="nav-link" th:href="@{/collection/total/list}">내역 관리</a>
+	      <!-- <a class="nav-link" th:href="@{/collection/my/list}">내역관리</a> -->
 	    </li>
 	    <li class="nav-item">
 	      <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>

@@ -1,6 +1,7 @@
 package com.donggyeong.voicecollector.collection;
 
 import com.donggyeong.voicecollector.BasetimeEntity;
+import com.donggyeong.voicecollector.registration.Registration;
 import com.donggyeong.voicecollector.user.SiteUser;
 
 import jakarta.persistence.Column;
@@ -21,9 +22,6 @@ public class Collection extends BasetimeEntity{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(nullable = false)
-	private Integer scriptId;
-	
 	@Column(nullable = false, length = 131072)
 	private String base64Data;
 	
@@ -41,6 +39,9 @@ public class Collection extends BasetimeEntity{
 	
 	@ManyToOne
 	private SiteUser author;
+	
+	@ManyToOne
+	private Registration script;
 	
 	@PrePersist
 	public void prePersist() {

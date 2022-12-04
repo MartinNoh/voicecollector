@@ -2,6 +2,7 @@ package com.donggyeong.voicecollector.collection;
 
 import java.security.Principal;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.donggyeong.voicecollector.registration.Registration;
+import com.donggyeong.voicecollector.registration.RegistrationForm;
 import com.donggyeong.voicecollector.registration.RegistrationService;
 import com.donggyeong.voicecollector.user.SiteUser;
 import com.donggyeong.voicecollector.user.UserService;
@@ -36,8 +38,8 @@ public class CollectionController {
 		Registration myNewScriptData = collectionService.getMyNewScript(siteUser);
 		model.addAttribute("myRecordCnt", myRecordCnt);
 		model.addAttribute("scriptCnt", scriptCnt);
-		model.addAttribute("script", myNewScriptData.getScript());
-		model.addAttribute("scriptId", myNewScriptData.getId());
+		model.addAttribute("script", myNewScriptData == null ? "스크립트가 먼저 업로드되어야 합니다." : myNewScriptData.getScript());
+		model.addAttribute("scriptId", myNewScriptData == null ? "0" : myNewScriptData.getId());
 		return "collection_record";
 	}	
 	
@@ -51,4 +53,13 @@ public class CollectionController {
 	    } 
 	    return ResponseEntity.ok("File uploaded successfully.");
 	  }
+	
+	@PreAuthorize("isAuthenticated()")
+	@RequestMapping("/total/list")
+	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
+		Page<Collection> paging = this.collectionService.getList(page, kw);
+		model.addAttribute("paging", paging);
+		model.addAttribute("kw", kw);
+		return "collection_total_list";
+	}
 }

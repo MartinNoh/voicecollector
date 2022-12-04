@@ -28,7 +28,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
 	@Query(nativeQuery = true, value = 
 			"select * "
 			+ "from registration r "
-			+ "where r.id not in (select c.script_id from collection c where c.author_id = :#{#siteUser.id}) "
+			+ "where r.id not in (select c.script_id from collection c where c.author_id = :#{#siteUser.id} and in_use_yn = 'y') "
 			+ "order by r.modified_date asc "
 			+ "limit 1 "
 			)

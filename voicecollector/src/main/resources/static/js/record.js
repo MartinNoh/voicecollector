@@ -217,3 +217,12 @@ function visualize(stream) {
 
 	}
 }
+
+window.onload = function(){
+	if(document.getElementById('scriptId').value == "0") {
+		record.disabled = true;
+		stop.disabled = true;
+		play.disabled = true;
+		next.disabled = true;
+	}
+}
