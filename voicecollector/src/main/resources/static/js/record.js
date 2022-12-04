@@ -140,6 +140,7 @@ if (navigator.mediaDevices.getUserMedia) {
 
 			if (response.status == 200) {
 				alert("정상적으로 업로드되었습니다.");
+				window.location.href = "/collection/record";
 			} else {
 				alert("업로드 문제가 발생하였습니다.");
 			}

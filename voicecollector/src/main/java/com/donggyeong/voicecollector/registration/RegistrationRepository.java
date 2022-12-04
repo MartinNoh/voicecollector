@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.donggyeong.voicecollector.user.SiteUser;
+
 public interface RegistrationRepository extends JpaRepository<Registration, Integer>{
 
 	@Query("select "
@@ -22,4 +24,13 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
 			+ "from Registration r "
 			)
 	Integer getTotalRegistrationCnt();
+	
+	@Query(nativeQuery = true, value = 
+			"select * "
+			+ "from registration r "
+			+ "where r.id not in (select c.script_id from collection c where c.author_id = :#{#siteUser.id}) "
+			+ "order by r.modified_date asc "
+			+ "limit 1 "
+			)
+	Registration getMyNewScriptData(@Param("siteUser") SiteUser siteUser);
 }

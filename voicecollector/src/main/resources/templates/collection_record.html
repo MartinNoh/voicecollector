@@ -9,7 +9,7 @@
 		</div>
 
 		<div class="col-lg-6  col-md-6">
-			<h6 th:text="|나의 녹음 ${myRecordCnt}건 / 스크립트 ${scriptCnt}건 (팀 전체 녹음 ${teamRecordCnt}건 )|"></h6>
+			<h6 th:text="|나의 녹음 ${myRecordCnt}건 / 스크립트 ${scriptCnt}건|"></h6>
 		</div>
 	</div>
 	<!-- subtitle & the number of cases END-->
@@ -21,8 +21,8 @@
 			<!-- script sentence -->
 			<div>
 				<p>스크립트 문장</p>
-				<h4 id="scriptSentence">"아무래도 좋은 것뿐인 세계에는 아낄 것도 없고 소중할 것도 없지."</h4>
-				<input type="hidden" id="scriptId" value="1294817249" />
+				<h4 id="scriptSentence" th:text="${script}"></h4>
+				<input type="hidden" id="scriptId" th:value="${scriptId}"/>
 			</div>
 
 			<div>
