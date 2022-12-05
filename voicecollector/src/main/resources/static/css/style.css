@@ -6,6 +6,9 @@
 @import
 	url(https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css)
 	;
+.modal-dialog {
+	min-width: 100vh;
+}
 
 body {
 	font-family: 'NanumSquare', sans-serif;
