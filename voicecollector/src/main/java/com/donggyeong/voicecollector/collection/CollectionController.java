@@ -59,13 +59,38 @@ public class CollectionController {
 	  }
 	
 	@PreAuthorize("isAuthenticated()")
-	@RequestMapping("/total/list")
+	@RequestMapping("/list")
 	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
 		Page<Collection> paging = this.collectionService.getList(page, kw);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
-		return "collection_total_list";
+		return "collection_list";
 	}
+
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/modify/{id}")
+	public String modify(Model model, @PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
+		Page<Collection> paging = this.collectionService.getList(page, kw);
+		model.addAttribute("paging", paging);
+		model.addAttribute("kw", kw);
+		Collection collection = this.collectionService.getCollection(id);
+		model.addAttribute("script", collection.getScript().getScript() == null ? "스크립트를 가져올 수 없습니다." : collection.getScript().getScript());
+		model.addAttribute("collectionId", collection.getId() == null ? "0" : collection.getId());
+		model.addAttribute("base64Data", collection.getBase64Data() == null ? "0" : collection.getBase64Data());
+		return "collection_modify";
+	}
+	
+	@PostMapping("/modify")
+	public ResponseEntity<?> handleFileModify(@RequestParam("collectionId") String collectionId, @RequestParam("audioType") String audioType, @RequestParam("base64Data") String base64Data, Principal principal) {
+	    try {
+	    	Collection collection = this.collectionService.getCollection(Integer.parseInt(collectionId));
+			SiteUser siteUser = this.userService.getUser(principal.getName());
+	    	collectionService.modify(collection, audioType, base64Data, siteUser);	        
+	    } catch (Exception e) {
+	      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    } 
+	    return ResponseEntity.ok("File uploaded successfully.");
+	  }
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{id}")
@@ -77,6 +102,6 @@ public class CollectionController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
 		}
 		this.collectionService.delete(collection);
-		return "redirect:/collection/total/list";
+		return "redirect:/collection/list";
 	}
 }

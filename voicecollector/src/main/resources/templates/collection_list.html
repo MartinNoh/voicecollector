@@ -70,7 +70,7 @@
 			</div>
 			<!-- 페이징처리 끝 -->
 			
-			<form th:action="@{/collection/total/list}" method="get" id="searchForm">
+			<form th:action="@{/collection/list}" method="get" id="searchForm">
 				<input type="hidden" id="kw" name="kw" th:value="${kw}">
 				<input type="hidden" id="page" name="page" th:value="${paging.number}">
 			</form>
@@ -111,8 +111,8 @@
 									</audio>
 							
 									<div class="input-group-append" style="margin-top: 0.8%; margin-left: 2%;">
-										<a class="btn btn-success" th:onclick="deleteScript()" th:text="재녹음"></a>
-										<a class="btn btn-danger" th:onclick="deleteScript()" th:text="삭제"></a>
+										<a class="btn btn-success" th:onclick="modifyRecord()" th:text="재녹음"></a>
+										<a class="btn btn-danger" th:onclick="deleteCollection()" th:text="삭제"></a>
 									</div>
 								</div>
 							</div>
@@ -189,8 +189,18 @@
 	  return arr;
 	}
 	
-	// 스크립트 삭제 버튼 클릭
-	function deleteScript() {
+	// 재녹음 버튼 클릭
+	function modifyRecord() {
+		if (window.confirm("재녹음하시겠습니까?")) {
+			const collectionId = document.getElementById('collectionId').value;
+			const page = document.getElementById('page').value;
+			const kw = document.getElementById('kw').value;
+			location.href = "/collection/modify/" + collectionId + "?page=" + page + "&kw=" + kw;
+		}
+	}
+	
+	// 삭제 버튼 클릭
+	function deleteCollection() {
 		if (window.confirm("정말 삭제하시겠습니까?")) {
 			const collectionId = document.getElementById('collectionId').value;
 			const page = document.getElementById('page').value;

@@ -34,6 +34,8 @@ public class SecurityConfig {
 	        .and()
 	        .csrf().ignoringRequestMatchers("/collection/upload/**")
 	        .and()
+	        .csrf().ignoringRequestMatchers("/collection/modify/**")
+	        .and()
 	        .headers()
 	        .addHeaderWriter (new XFrameOptionsHeaderWriter(
 	                XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
