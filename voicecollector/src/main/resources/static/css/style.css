@@ -6,8 +6,9 @@
 @import
 	url(https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css)
 	;
-.modal-dialog {
-	min-width: 100vh;
+
+.modal-script {
+	min-width: 80vh;
 }
 
 body {

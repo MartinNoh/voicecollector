@@ -8,9 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.donggyeong.voicecollector.registration.Registration;
 import com.donggyeong.voicecollector.registration.RegistrationForm;
@@ -61,5 +65,18 @@ public class CollectionController {
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		return "collection_total_list";
+	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, RedirectAttributes re, Principal principal) {
+		re.addAttribute("page", page);
+		re.addAttribute("kw", kw);
+		Collection collection = this.collectionService.getCollection(id);
+		if(!collection.getAuthor().getEmail().equals(principal.getName())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
+		}
+		this.collectionService.delete(collection);
+		return "redirect:/collection/total/list";
 	}
 }

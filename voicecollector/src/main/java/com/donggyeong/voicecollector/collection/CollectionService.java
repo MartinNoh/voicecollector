@@ -10,6 +10,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.donggyeong.voicecollector.DataNotFoundException;
 import com.donggyeong.voicecollector.registration.Registration;
 import com.donggyeong.voicecollector.registration.RegistrationRepository;
 import com.donggyeong.voicecollector.registration.RegistrationService;
@@ -134,5 +136,19 @@ public class CollectionService {
 		sorts.add(Sort.Order.desc("createdDate"));
 		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 		return this.collectionRepository.findAllBySearch(kw, pageable);
+	}
+	
+	public Collection getCollection(Integer id) {
+		Optional<Collection> optional = this.collectionRepository.findById(id);
+		if(optional.isPresent()) {
+			return optional.get();
+		} else {
+			throw new DataNotFoundException("Data not found.");
+		}
+	}
+	
+	public void delete(Collection collection) {
+		collection.setInUseYn("n");
+		this.collectionRepository.save(collection);
 	}
 }
