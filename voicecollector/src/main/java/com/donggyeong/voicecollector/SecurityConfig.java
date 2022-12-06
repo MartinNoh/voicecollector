@@ -30,7 +30,9 @@ public class SecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeRequests().requestMatchers("/**").permitAll()
+		http.authorizeRequests()
+			.requestMatchers("/registration/**").hasRole("ADMIN")
+			.requestMatchers("/**").permitAll()
 	        .and()
 	        .csrf().ignoringRequestMatchers("/collection/upload/**")
 	        .and()

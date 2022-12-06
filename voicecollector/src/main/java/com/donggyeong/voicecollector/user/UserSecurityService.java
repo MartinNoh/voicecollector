@@ -1,7 +1,6 @@
 package com.donggyeong.voicecollector.user;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -27,12 +26,8 @@ public class UserSecurityService implements UserDetailsService {
             throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
         }
         SiteUser siteUser = _siteUser.get();
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if ("admin".equals(email)) {
-            authorities.add(new SimpleGrantedAuthority(UserRole.ADMIN.getValue()));
-        } else {
-            authorities.add(new SimpleGrantedAuthority(UserRole.USER.getValue()));
-        }
-        return new User(siteUser.getEmail(), siteUser.getPassword(), authorities);
+        String role = siteUser.getRole().getValue();
+        GrantedAuthority authority = new SimpleGrantedAuthority(role);
+        return new User(siteUser.getEmail(), siteUser.getPassword(), Collections.singleton(authority));
     }
 }
