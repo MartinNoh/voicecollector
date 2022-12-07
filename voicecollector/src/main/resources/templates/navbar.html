@@ -13,7 +13,7 @@
 	      <!-- <a class="nav-link" th:href="@{/collection/mylist}">작업 관리</a> -->
 	    </li>
 	    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
-	      <a class="nav-link" th:href="@{/registration/list}">회원 관리</a>
+	      <a class="nav-link" th:href="@{/user/list}">회원 관리</a>
       	</li>
 	    <li class="nav-item">
 	      <a class="nav-link" th:href="@{/user/logout}">로그 아웃</a>

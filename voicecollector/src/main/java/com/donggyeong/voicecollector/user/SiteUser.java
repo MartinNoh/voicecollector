@@ -41,7 +41,7 @@ public class SiteUser extends BasetimeEntity{
 	
 	@PrePersist
 	public void prePersist() {
-		this.useYn = this.useYn == null ? "y" : this.useYn;
+		this.useYn = this.useYn == null ? "n" : this.useYn;
 		this.role = this.role == null ? UserRole.USER : this.role;
 	}
 }

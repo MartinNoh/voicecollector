@@ -26,6 +26,9 @@ public class UserSecurityService implements UserDetailsService {
             throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
         }
         SiteUser siteUser = _siteUser.get();
+        if("n".equals(siteUser.getUseYn())) {
+        	throw new UsernameNotFoundException("관리자의 승인을 받지 못했습니다.");
+        }
         String role = siteUser.getRole().getValue();
         GrantedAuthority authority = new SimpleGrantedAuthority(role);
         return new User(siteUser.getEmail(), siteUser.getPassword(), Collections.singleton(authority));
