@@ -2,6 +2,8 @@ package com.donggyeong.voicecollector.registration;
 
 import java.security.Principal;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.donggyeong.voicecollector.user.SiteUser;
 import com.donggyeong.voicecollector.user.UserService;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/registration")

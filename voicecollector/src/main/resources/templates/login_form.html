@@ -6,10 +6,10 @@
 		<h1>Voice Collector</h1>
 		<h2>"음성 수집의 전체 과정을 간편하고 빠르게 수행하도록 도와드립니다."</h2>
 		
-		<div th:if="${#authentication != null}">
+		<div sec:authorize="isAuthenticated()">
 			<a th:href="@{/collection/record}" class="btn-get-started text-decoration-none">녹음 시작</a>
 		</div>
-		<div th:if="${#authentication == null}">
+		<div sec:authorize="isAnonymous()" var="anonymousUser">
 			<a data-bs-toggle="modal" href="#loginModal" role="button" id="btnLogin" class="btn-get-started text-decoration-none">녹음 시작</a>
 		</div>
 		
@@ -54,7 +54,9 @@
 
 <script layout:fragment="script" type='text/javascript' th:inline="javascript">
 window.onload = function(){
-	document.getElementById('btnLogin').click();
+	if('${anonymousUser}') {
+		document.getElementById('btnLogin').click();
+	}
 }
 </script>
 </html>

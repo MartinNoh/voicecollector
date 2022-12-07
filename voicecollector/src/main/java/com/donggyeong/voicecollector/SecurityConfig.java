@@ -31,12 +31,12 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.requestMatchers("/registration/**").hasRole("ADMIN")
-			.requestMatchers("/**").permitAll()
+			.antMatchers("/registration/**").hasRole("ADMIN")
+			.antMatchers("/**").permitAll()
 	        .and()
-	        .csrf().ignoringRequestMatchers("/collection/upload/**")
+	        .csrf().ignoringAntMatchers("/collection/upload/**")
 	        .and()
-	        .csrf().ignoringRequestMatchers("/collection/modify/**")
+	        .csrf().ignoringAntMatchers("/collection/modify/**")
 	        .and()
 	        .headers()
 	        .addHeaderWriter (new XFrameOptionsHeaderWriter(
