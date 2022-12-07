@@ -5,8 +5,8 @@ plugins {
 }
 
 group = 'com.donggyeong'
-version = '0.0.3-SNAPSHOT'
-sourceCompatibility = '1.8'
+version = '0.0.4-SNAPSHOT'
+sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
