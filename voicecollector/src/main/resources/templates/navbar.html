@@ -3,15 +3,18 @@
 	
 	<ul class="navbar-nav mr-auto" style="margin-right: 10%;">
 	    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
-	      <a class="nav-link" th:href="@{/registration/list}">대본 등록관리</a>
+	      <a class="nav-link" th:href="@{/registration/list}">대본 등록</a>
       	</li>
 	    <li class="nav-item">
-	      <a class="nav-link" th:href="@{/collection/record}">대본 녹음하기</a>
+	      <a class="nav-link" th:href="@{/collection/record}">녹음 작업</a>
 	    </li>
 	    <li class="nav-item">
-	      <a class="nav-link" th:href="@{/collection/list}">작업 내역관리</a>
-	      <!-- <a class="nav-link" th:href="@{/collection/mylist}">나의 작업내역</a> -->
+	      <a class="nav-link" th:href="@{/collection/list}">작업 관리</a>
+	      <!-- <a class="nav-link" th:href="@{/collection/mylist}">작업 관리</a> -->
 	    </li>
+	    <li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+	      <a class="nav-link" th:href="@{/registration/list}">회원 관리</a>
+      	</li>
 	    <li class="nav-item">
 	      <a class="nav-link" th:href="@{/user/logout}">로그 아웃</a>
 	    </li>

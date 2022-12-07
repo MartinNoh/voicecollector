@@ -118,7 +118,7 @@
 								<div class="mb-3">
 									<label for="excelContents" class="form-label">2. 엑셀 입력 (A1셀 'script' 입력, A2셀부터 아래로 스크립트 나열.)</label>
 									<div class="input-group d-flex justify-content-between">
-										<input type="file" id="inputFile" onchange="readExcel()" style="margin-top: 0.3rem">
+										<input type="file" id="inputFile" onchange="readExcel()" style="margin-top: 0.3rem" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
 										<input type="hidden" id="excelContents" name="excelContents">
 										<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
 										<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
@@ -233,24 +233,31 @@
 	
 	// 엑셀 등록 버튼 클릭
 	function readExcel() {
-		if (window.confirm("등록 버튼을 누르고 잠시 기다려주세요.")) {
-			let stringJson = "";
-		    let input = event.target;
-		    let reader = new FileReader();
-		    reader.onload = function () {
-		        let data = reader.result;
-		        let workBook = XLSX.read(data, { type: 'binary' });
-		        workBook.SheetNames.forEach(function (sheetName) {
-		            console.log('SheetName: ' + sheetName);
-		            let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-		            stringJson = JSON.stringify(rows);
-		            console.log(stringJson);
-		    	    document.getElementById('excelContents').value = stringJson;
-		        })
-		    };
-		    reader.readAsBinaryString(input.files[0]);
+		const str = document.getElementById("inputFile").value
+		const fileName = str.split('\\').pop().toLowerCase();
+		if(fileName.split('.').pop().toLowerCase() != "xlsx"){
+			alert("*.xlsx 파일만 업로드 가능합니다.")
+			document.getElementById("inputFile").value = null;
 		} else {
-			document.getElementById("inputFile").value = null;	
+			if (window.confirm("등록 버튼을 누르고 잠시 기다려주세요.")) {
+				let stringJson = "";
+			    let input = event.target;
+			    let reader = new FileReader();
+			    reader.onload = function () {
+			        let data = reader.result;
+			        let workBook = XLSX.read(data, { type: 'binary' });
+			        workBook.SheetNames.forEach(function (sheetName) {
+			            console.log('SheetName: ' + sheetName);
+			            let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+			            stringJson = JSON.stringify(rows);
+			            console.log(stringJson);
+			    	    document.getElementById('excelContents').value = stringJson;
+			        })
+			    };
+			    reader.readAsBinaryString(input.files[0]);
+			} else {
+				document.getElementById("inputFile").value = null;	
+			}	
 		}
 	}
 </script>
