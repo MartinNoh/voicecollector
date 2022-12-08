@@ -36,7 +36,7 @@ public class CollectionController {
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/record")
 	public String record(Model model, Principal principal) {
-		SiteUser siteUser = this.userService.getUser(principal.getName());
+		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
 		int myRecordCnt = collectionService.getMyRecordCnt(siteUser);
 		int scriptCnt = registrationService.getScriptCnt();
 		Registration myNewScriptData = collectionService.getMyNewScript(siteUser);
@@ -50,7 +50,7 @@ public class CollectionController {
 	@PostMapping("/upload")
 	public ResponseEntity<?> handleFileUpload(@RequestParam("scriptId") String scriptId, @RequestParam("audioType") String audioType, @RequestParam("base64Data") String base64Data, Principal principal) {
 	    try {
-			SiteUser siteUser = this.userService.getUser(principal.getName());
+			SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
 	    	collectionService.upload(scriptId, audioType, base64Data, siteUser);	        
 	    } catch (Exception e) {
 	      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -84,7 +84,7 @@ public class CollectionController {
 	public ResponseEntity<?> handleFileModify(@RequestParam("collectionId") String collectionId, @RequestParam("audioType") String audioType, @RequestParam("base64Data") String base64Data, Principal principal) {
 	    try {
 	    	Collection collection = this.collectionService.getCollection(Integer.parseInt(collectionId));
-			SiteUser siteUser = this.userService.getUser(principal.getName());
+			SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
 	    	collectionService.modify(collection, audioType, base64Data, siteUser);	        
 	    } catch (Exception e) {
 	      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

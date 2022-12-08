@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.donggyeong.voicecollector.DataNotFoundException;
+import com.donggyeong.voicecollector.registration.Registration;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,8 +32,17 @@ public class UserService {
 		return user;
 	}
 	
-	public SiteUser getUser(String email) {
+	public SiteUser getUserByEmail(String email) {
 		Optional<SiteUser> siteUser =  this.userRepository.findByEmail(email);
+		if(siteUser.isPresent()) {
+			return siteUser.get();
+		} else {
+            throw new DataNotFoundException("siteuser not found");
+		}
+	}
+	
+	public SiteUser getUserById(Long id) {
+		Optional<SiteUser> siteUser =  this.userRepository.findById(id);
 		if(siteUser.isPresent()) {
 			return siteUser.get();
 		} else {
@@ -45,5 +55,15 @@ public class UserService {
 		sorts.add(Sort.Order.desc("createdDate"));
 		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
 		return this.userRepository.findAllBySearch(kw, pageable);
+	}
+	
+	public void modify(String siteUserId, String siteUserNickname, String siteUserUseYn, String siteUserRole) {
+		Long userId = Long.parseLong(siteUserId);
+		SiteUser siteUser = this.getUserById(userId);
+		UserRole userRole = UserRole.valueOf(siteUserRole);
+		siteUser.setNickname(siteUserNickname);
+		siteUser.setUseYn(siteUserUseYn);
+		siteUser.setRole(userRole);
+		this.userRepository.save(siteUser);
 	}
 }

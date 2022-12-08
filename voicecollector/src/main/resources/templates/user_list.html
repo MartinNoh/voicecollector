@@ -101,6 +101,8 @@
 		
 						<div class="modal-body" id="modalModifyBody">
 							<form th:action="@{/user/modify}" method="post">
+								<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
+								<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
 								<input type="hidden" id="siteUserId" name="siteUserId" />
 								<div class="mb-3">
 									<label for="email" class="form-label"><b>이메일</b></label>
@@ -133,13 +135,9 @@
 										</select>
 									</div>
 								</div>
-								<div class="mb-3">
-									<div class="input-group d-flex justify-content-between">
-										<div class="input-group-append" style="margin-top: 0.8%; margin-left: 2%;">
-											<button type="submit" class="btn btn-success">수정</button>
-											<a class="btn btn-danger" th:onclick="deleteSiteUser()" th:text="삭제"></a>
-										</div>
-									</div>
+								<div class="mb-3 d-flex justify-content-between" style="margin-top: 4%;">
+									<button type="submit" class="btn btn-success" style="width: 49%;" autofocus>수정</button>
+									<a class="btn btn-danger" th:onclick="deleteSiteUser()" th:text="삭제" style="width: 49%;"></a>
 								</div>
 							</form>
 						</div>
@@ -189,6 +187,14 @@
 		document.getElementById('siteUserNickname').value = nickname;
 		document.getElementById('siteUserUseYn').value = useYn;
 		document.getElementById('siteUserRole').value = role;
+	}
+	
+	// 변경 시 모달 가져오기
+	window.onload = function() {
+		if(/*[[${#strings.equals(modalClick, 'modify')}]]*/ 'default'){
+			document.getElementById(/*[[|site_user_${siteUserId}|]]*/ 'default').click();
+			alert("정보가 변경되었습니다.")
+		}
 	}
 	
 	// 삭제 버튼 클릭

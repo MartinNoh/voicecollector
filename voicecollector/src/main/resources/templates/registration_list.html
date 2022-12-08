@@ -4,7 +4,7 @@
 
 	<div class="row">
 		<div class="col-lg-6 ">
-			<h2><b>스크립트 등록관리</b></h2>
+			<h2><b>스크립트 등록</b></h2>
 		</div>
 		
 		<div class="col-lg-6">
@@ -120,8 +120,8 @@
 									<div class="input-group d-flex justify-content-between">
 										<input type="file" id="inputFile" onchange="readExcel()" style="margin-top: 0.3rem" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
 										<input type="hidden" id="excelContents" name="excelContents">
-										<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
-										<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
+										<input type="hidden" id="kwExcelModal" name="kw" th:value="${kw}">
+										<input type="hidden" id="pageExcelModal" name="page" th:value="${paging.number}">
 								
 										<div class="input-group-append">
 											<button type="submit" class="btn btn-success">등록</button>

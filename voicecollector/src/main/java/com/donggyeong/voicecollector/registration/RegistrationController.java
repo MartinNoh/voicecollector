@@ -51,7 +51,7 @@ public class RegistrationController {
 			model.addAttribute("modalClick", "create");
 			return "registration_list";
 		}
-		SiteUser siteUser = this.userService.getUser(principal.getName());
+		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
 		this.registrationService.create(registrationForm.getScript(), siteUser);
 		return "redirect:/registration/list";
 	}
@@ -64,7 +64,7 @@ public class RegistrationController {
 		model.addAttribute("kw", kw);
 
 		try {
-			SiteUser siteUser = this.userService.getUser(principal.getName());
+			SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
 			this.registrationService.readExcel(excelContents, siteUser);
 		} catch(Exception e) {
 			e.printStackTrace();

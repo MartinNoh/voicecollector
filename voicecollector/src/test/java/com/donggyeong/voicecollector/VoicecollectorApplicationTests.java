@@ -24,7 +24,7 @@ class VoicecollectorApplicationTests {
 	void contextLoads() {
 		for(int i=1; i<=300; i++) {
 			String script = String.format("테스트 데이터입니다. : [%03d]", i);
-			SiteUser siteUser =  this.userService.getUser("ehdrud1129@saltlux.com");
+			SiteUser siteUser =  this.userService.getUserByEmail("ehdrud1129@saltlux.com");
 			this.registrationService.create(script, siteUser);
 		}
 	}
