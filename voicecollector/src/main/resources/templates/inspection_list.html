@@ -3,12 +3,12 @@
 <div layout:fragment="content" class="container">
 	<div class="row">
 		<div class="col-lg-6 ">
-			<h2><b>회원 정보관리</b></h2>
+			<h2><b>검수 작업내역</b></h2>
 		</div>
 		
 		<div class="col-lg-6">
 			<div class="input-group">
-				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="회원 이메일 또는 이름 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus >
+				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="스크립트 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus >
 				<div class="input-group-append">
 					<button class="btn btn-primary" type="button" id="btn_search">검색</button>
 				</div>
@@ -22,24 +22,17 @@
 				<thead class="table-dark">
 					<tr class="text-center">
 						<th>번호</th>
-						<th>이메일</th>
-						<th>사용자명</th>
-						<th>권한부여</th>
-						<th>사용여부</th>
-						<th>생성일자</th>
+						<th style="width: 50%;">스크립트</th>
+						<th>녹음자</th>
+						<th>녹음일시</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="text-center" th:each="siteUser, loop :  ${paging}">
+					<tr class="text-center" th:each="collection, loop :  ${paging}">
 						<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
-						<td class="text-start"><a class="table-script" data-bs-toggle="modal" href="#siteUserModifyModal" th:onclick="modifySiteUser([[${siteUser.id}]], [[${siteUser.email}]], [[${siteUser.nickname}]], [[${siteUser.inUseYn}]], [[${siteUser.role}]])" th:id="|site_user_${siteUser.id}|" th:text="${siteUser.email}"></a></td>
-						<td th:text="${siteUser.nickname}"></td>
-						<td th:if="${siteUser.role.name()}=='ADMIN'" th:text="관리자"></td>
-						<td th:if="${siteUser.role.name()}=='MANAGER'" th:text="검수자"></td>
-						<td th:if="${siteUser.role.name()}=='USER'" th:text="작업자"></td>
-						<td th:if="${siteUser.inUseYn}=='y'" th:text="활성"></td>
-						<td th:if="${siteUser.inUseYn}!='y'" th:text="비활성"></td>
-						<td th:text="${#temporals.format(siteUser.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+						<td class="text-start"><a class="table-script" data-bs-toggle="modal" href="#collectionModifyModal" th:onclick="modifyCollection([[${collection.id}]], [[${collection.script.script}]], [[${collection.base64Data}]])" th:id="|script_${collection.id}|" th:text="${collection.script.script}"></a></td>
+						<td><span th:if="${collection.author != null }" th:text="${collection.author.email}"></span></td>
+						<td th:text="${#temporals.format(collection.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
 					</tr>
 					<tr class="text-center" th:if="${paging.isEmpty()}">
 						<td colspan="4">등록된 문장이 없습니다.</td>
@@ -77,7 +70,7 @@
 			</div>
 			<!-- 페이징처리 끝 -->
 			
-			<form th:action="@{/user/list}" method="get" id="searchForm">
+			<form th:action="@{/collection/list}" method="get" id="searchForm">
 				<input type="hidden" id="kw" name="kw" th:value="${kw}">
 				<input type="hidden" id="page" name="page" th:value="${paging.number}">
 			</form>
@@ -88,57 +81,41 @@
 		<div class="col-lg-12">
 		
 			<!-- 스크립트 변경 모달-->		
-			<div class="modal fade" id="siteUserModifyModal" aria-hidden="true" aria-labelledby="siteUserModifyModalLabel" tabindex="-1">
+			<div class="modal fade" id="collectionModifyModal" aria-hidden="true" aria-labelledby="collectionModifyModalLabel" tabindex="-1">
 				<div class="modal-dialog modal-dialog-centered modal-script">
 					<div class="modal-content">
 		
 						<div class="modal-header">
-							<h1 class="modal-title fs-5" id="siteUserModifyModalLabel">
-								<b>회원정보 변경</b>
+							<h1 class="modal-title fs-5" id="collectionModifyModalLabel">
+								<b>검수 처리작업</b>
 							</h1>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 		
 						<div class="modal-body" id="modalModifyBody">
-							<form th:action="@{/user/modify}" method="post">
-								<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
-								<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
-								<input type="hidden" id="siteUserId" name="siteUserId" />
-								<div class="mb-3">
-									<label for="email" class="form-label"><b>이메일</b></label>
-									<div class="input-group">
-										<input type="text" id="siteUserEmail" name="siteUserEmail" class="form-control" disabled />
+							<div class="mb-3">
+								<label for="script" class="form-label"><b>스크립트</b></label>
+								<div class="input-group">
+									<input type="text" id="collectionScript" class="form-control" placeholder="스크립트를 읽지 못했습니다." disabled />
+									<input type="hidden" id="collectionId"/>
+									<input type="hidden" id="collectionBase64Data"/>
+								</div>
+							</div>
+							
+							<div class="mb-3">
+								<label for="script" class="form-label"><b>확인 및 변경</b></label>
+
+								<div class="input-group d-flex justify-content-between">
+									<audio id="audio" class="form-control" controls>
+									  <source id="source" src="" type="audio/wav"/>
+									</audio>
+							
+									<div class="input-group-append" style="margin-top: 0.8%; margin-left: 2%;">
+										<a class="btn btn-success" th:onclick="modifyInspection('y')" th:text="승인"></a>
+										<a class="btn btn-danger" th:onclick="modifyInspection('n')" th:text="반려"></a>
 									</div>
 								</div>
-								<div class="mb-3">
-									<label for="nickname" class="form-label"><b>사용자명</b></label>
-									<div class="input-group">
-										<input type="text" id="siteUserNickname" name="siteUserNickname" class="form-control" />
-									</div>
-								</div>
-								<div class="mb-3">
-									<label for="role" class="form-label"><b>권한부여</b></label>
-									<div class="input-group">
-										<select class="form-select" id="siteUserRole" name="siteUserRole" aria-label="select siteUser's role">
-										  <option selected value="USER">작업자</option>
-										  <option value="MANAGER">검수자</option>
-										  <option value="ADMIN">관리자</option>
-										</select>
-									</div>
-								</div>
-								<div class="mb-3">
-									<label for="inUseYn" class="form-label"><b>사용여부</b></label>
-									<div class="input-group">
-										<select class="form-select" id="siteUserInUseYn" name="siteUserInUseYn" aria-label="select siteUser's inUseYn">
-										  <option selected value="y">활성</option>
-										  <option value="n">비활성</option>
-										</select>
-									</div>
-								</div>
-								<div class="mb-3 d-flex justify-content-between" style="margin-top: 4%;">
-									<button type="submit" class="btn btn-success" style="width: 100%;" autofocus>수정</button>
-								</div>
-							</form>
+							</div>
 						</div>
 		
 					</div>
@@ -180,19 +157,54 @@
 	});
 	
 	// 스크립트 클릭하면 변경 모달 구성
-	function modifySiteUser(id, email, nickname, inUseYn, role) {
-		document.getElementById('siteUserId').value = id;
-		document.getElementById('siteUserEmail').value = email;
-		document.getElementById('siteUserNickname').value = nickname;
-		document.getElementById('siteUserInUseYn').value = inUseYn;
-		document.getElementById('siteUserRole').value = role;
+	function modifyCollection(id, script, base64Data) {
+		document.getElementById('collectionId').value = id;
+		document.getElementById('collectionScript').value = script;
+		document.getElementById('collectionBase64Data').value = base64Data;
+		
+		// audio 태그
+		let binary = convertURIToBinary(base64Data);
+		let blob = new Blob([binary], {
+		  type: 'audio/wav'
+		});
+		let blobUrl = URL.createObjectURL(blob);
+		
+		$("#source").attr("src", blobUrl);
+		$("#audio")[0].load(); 
+		$("#audio")[0].oncanplaythrough = $("#audio")[0].play();
 	}
 	
-	// 변경 시 모달 가져오기
-	window.onload = function() {
-		if(/*[[${#strings.equals(modalClick, 'modify')}]]*/ 'default'){
-			document.getElementById(/*[[|site_user_${siteUserId}|]]*/ 'default').click();
-			alert("정보가 변경되었습니다.")
+	// function : convert base64 to blob
+	function convertURIToBinary(dataURI) {
+	  let BASE64_MARKER = ';base64,';
+	  let base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+	  let base64 = dataURI.substring(base64Index);
+	  let raw = window.atob(base64);
+	  let rawLength = raw.length;
+	  let arr = new Uint8Array(new ArrayBuffer(rawLength));
+	
+	  for (let i = 0; i < rawLength; i++) {
+	    arr[i] = raw.charCodeAt(i);
+	  }
+	  return arr;
+	}
+	
+	// 재녹음 버튼 클릭
+	function modifyInspection(isApproved) {
+		if(isApproved == 'y'){
+			if (window.confirm("승인 하시겠습니까?")) {
+				const collectionId = document.getElementById('collectionId').value;
+				const page = document.getElementById('page').value;
+				const kw = document.getElementById('kw').value;
+				location.href = "/inspection/modify/" + collectionId + "?isApproved=y&page=" + page + "&kw=" + kw;
+			}	
+		} else{
+			if (window.confirm("반려 하시겠습니까?")) {
+				const collectionId = document.getElementById('collectionId').value;
+				const page = document.getElementById('page').value;
+				const kw = document.getElementById('kw').value;
+				location.href = "/inspection/modify/" + collectionId + "?isApproved=n&page=" + page + "&kw=" + kw;
+			}	
 		}
 	}
 </script>

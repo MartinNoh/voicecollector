@@ -33,7 +33,7 @@ public class SiteUser extends BasetimeEntity{
 	private String nickname;
 	
 	@Column(nullable = false, columnDefinition = "char")
-	private String useYn;
+	private String inUseYn;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -41,7 +41,7 @@ public class SiteUser extends BasetimeEntity{
 	
 	@PrePersist
 	public void prePersist() {
-		this.useYn = this.useYn == null ? "n" : this.useYn;
+		this.inUseYn = this.inUseYn == null ? "n" : this.inUseYn;
 		this.role = this.role == null ? UserRole.USER : this.role;
 	}
 }

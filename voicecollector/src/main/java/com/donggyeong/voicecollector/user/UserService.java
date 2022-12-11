@@ -57,12 +57,12 @@ public class UserService {
 		return this.userRepository.findAllBySearch(kw, pageable);
 	}
 	
-	public void modify(String siteUserId, String siteUserNickname, String siteUserUseYn, String siteUserRole) {
+	public void modify(String siteUserId, String siteUserNickname, String siteUserInUseYn, String siteUserRole) {
 		Long userId = Long.parseLong(siteUserId);
 		SiteUser siteUser = this.getUserById(userId);
 		UserRole userRole = UserRole.valueOf(siteUserRole);
 		siteUser.setNickname(siteUserNickname);
-		siteUser.setUseYn(siteUserUseYn);
+		siteUser.setInUseYn(siteUserInUseYn);
 		siteUser.setRole(userRole);
 		this.userRepository.save(siteUser);
 	}
