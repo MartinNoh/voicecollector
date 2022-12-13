@@ -40,10 +40,14 @@ public class InspectionController {
 
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/modify/{collectionId}")
-	public String modify(Model model, @PathVariable("collectionId") String collectionId, @RequestParam("isApproved") String isApproved, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
-		logger.info(collectionId);
-		logger.info(isApproved);
-		return "redirect:/insepction/list"; 
+	public String modify(Model model, @PathVariable("collectionId") String collectionId, @RequestParam("isApproved") String isApproved, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, Principal principal) {
+		String username = principal.getName();
+		inspectionService.create(collectionId, isApproved, username);
+		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
+		Page<Collection> paging = this.inspectionService.getList(siteUser, page, kw);
+		model.addAttribute("paging", paging);
+		model.addAttribute("kw", kw);
+		return "inspection_list";
 	}
 	
 }

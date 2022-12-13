@@ -26,9 +26,6 @@ public class Inspection extends BasetimeEntity{
 	
 	@Column(nullable = false, columnDefinition = "char")
 	private String isApproved;
-
-	@ManyToOne
-	private SiteUser whoseTurn;
 	
 	@ManyToOne
 	private SiteUser inspector;
