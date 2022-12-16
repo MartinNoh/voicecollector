@@ -201,11 +201,13 @@ public class CollectionService {
 		return formatter.format(today);
 	}
 	
-	public Page<Collection> getList(int page, String kw) {
+	public Page<Collection> getList(int page, String kw, String category) {
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("createdDate"));
 		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-		return this.collectionRepository.findAllBySearch(kw, pageable);
+		if("all".equals(category))	return this.collectionRepository.findAllBySearch(kw, pageable);
+		else if("wait".equals(category))	return this.collectionRepository.findAllWaitingBySearch(kw, pageable);
+		else	return this.collectionRepository.findAllBySearch(kw, pageable, category);
 	}
 	
 	public Page<Collection> getMyList(int page, String kw, SiteUser siteUser) {

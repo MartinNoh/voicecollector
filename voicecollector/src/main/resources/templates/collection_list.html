@@ -8,7 +8,13 @@
 		
 		<div class="col-lg-6">
 			<div class="input-group">
-				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="스크립트 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus >
+	            <select id="search_category" class="form-select" >
+	            	<option value="all" th:text="전체" selected></option>
+	            	<option value="n" th:text="반려"></option>
+	            	<option value="wait" th:text="검수중"></option>
+	            	<option value="y" th:text="승인"></option>
+	            </select>
+				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="스크립트 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus  style="width: 60%;">
 				<div class="input-group-append">
 					<button class="btn btn-primary" type="button" id="btn_search">검색</button>
 				</div>
@@ -77,6 +83,7 @@
 			<form th:action="@{/collection/list}" method="get" id="searchForm">
 				<input type="hidden" id="kw" name="kw" th:value="${kw}">
 				<input type="hidden" id="page" name="page" th:value="${paging.number}">
+				<input type="hidden" id="category" name="category" th:value="${category}">
 			</form>
 		</div>
 	</div>
@@ -132,6 +139,10 @@
 
 
 <script layout:fragment="script" type='text/javascript' th:inline="javascript">
+	window.onload = function() {
+		document.getElementById("search_category").value = document.getElementById('category').value;
+	}
+
 	// 페이지네이션 클릭
 	const page_elements = document.getElementsByClassName("page-link");
 	Array.from(page_elements).forEach(function(element) {
@@ -144,9 +155,9 @@
 	// 검색버튼 클릭
 	const btn_search = document.getElementById("btn_search");
 	btn_search.addEventListener('click', function() {
-		document.getElementById('kw').value = document
-				.getElementById('search_kw').value;
+		document.getElementById('kw').value = document.getElementById('search_kw').value;
 		document.getElementById('page').value = 0; // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
+		document.getElementById('category').value = document.getElementById('search_category').value;
 		document.getElementById('searchForm').submit();
 	});
 	

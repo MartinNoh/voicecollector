@@ -60,10 +60,11 @@ public class CollectionController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/list")
-	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
-		Page<Collection> paging = this.collectionService.getList(page, kw);
+	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category) {
+		Page<Collection> paging = this.collectionService.getList(page, kw, category);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
+		model.addAttribute("category", category);
 		return "collection_list";
 	}
 	
@@ -79,8 +80,8 @@ public class CollectionController {
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/modify/{id}")
-	public String modify(Model model, @PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
-		Page<Collection> paging = this.collectionService.getList(page, kw);
+	public String modify(Model model, @PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category) {
+		Page<Collection> paging = this.collectionService.getList(page, kw, category);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		Collection collection = this.collectionService.getCollection(id);
