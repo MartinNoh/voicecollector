@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.donggyeong.voicecollector.collection.Collection;
 import com.donggyeong.voicecollector.collection.CollectionService;
@@ -40,14 +41,14 @@ public class InspectionController {
 
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/modify/{collectionId}")
-	public String modify(Model model, @PathVariable("collectionId") String collectionId, @RequestParam("isApproved") String isApproved, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, Principal principal) {
+	public String modify(RedirectAttributes re, @PathVariable("collectionId") String collectionId, @RequestParam("isApproved") String isApproved, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, Principal principal) {
 		String username = principal.getName();
 		inspectionService.create(collectionId, isApproved, username);
 		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
 		Page<Collection> paging = this.inspectionService.getList(siteUser, page, kw);
-		model.addAttribute("paging", paging);
-		model.addAttribute("kw", kw);
-		return "inspection_list";
+		re.addAttribute("paging", paging);
+		re.addAttribute("kw", kw);
+		return "redirect:/inspection/list";
 	}
 	
 }

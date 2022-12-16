@@ -208,6 +208,13 @@ public class CollectionService {
 		return this.collectionRepository.findAllBySearch(kw, pageable);
 	}
 	
+	public Page<Collection> getMyList(int page, String kw, SiteUser siteUser) {
+		List<Sort.Order> sorts = new ArrayList<>();
+		sorts.add(Sort.Order.desc("createdDate"));
+		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+		return this.collectionRepository.findAllBySearch(kw, pageable, siteUser);
+	}
+	
 	public Collection getCollection(Integer id) {
 		Optional<Collection> optional = this.collectionRepository.findById(id);
 		if(optional.isPresent()) {

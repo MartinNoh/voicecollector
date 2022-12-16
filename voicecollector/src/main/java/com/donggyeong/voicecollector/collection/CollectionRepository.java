@@ -28,4 +28,16 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			+ "    and c.inUseYn = 'y' "
 			)
 	Page<Collection> findAllBySearch(@Param("kw") String kw, Pageable pageable);
+	
+	@Query("select "
+			+ "distinct c "
+			+ "from Collection c "
+			+ "left outer join Registration r on c.script = r "
+			+ "where 1=1 "
+			+ "    and r.script like %:kw% "
+			+ "    and r.inUseYn = 'y' "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.author = :#{#siteUser} "
+			)
+	Page<Collection> findAllBySearch(@Param("kw") String kw, Pageable pageable, @Param("siteUser") SiteUser siteUser);
 }

@@ -66,6 +66,16 @@ public class CollectionController {
 		model.addAttribute("kw", kw);
 		return "collection_list";
 	}
+	
+	@PreAuthorize("isAuthenticated()")
+	@RequestMapping("/mylist")
+	public String mylist(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, Principal principal) {
+		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
+		Page<Collection> paging = this.collectionService.getMyList(page, kw, siteUser);
+		model.addAttribute("paging", paging);
+		model.addAttribute("kw", kw);
+		return "collection_list";
+	}
 
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/modify/{id}")

@@ -8,12 +8,14 @@
 		<li class="nav-item">
 			<a class="nav-link" th:href="@{/collection/record}">녹음 작업</a>
 		</li>
-		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
-			<a class="nav-link" th:href="@{/inspection/list}">검수 작업</a>
+		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+			<a class="nav-link" th:href="@{/collection/list}">녹음 내역</a>
 		</li>
-		<li class="nav-item">
-			<a class="nav-link" th:href="@{/collection/list}">작업 관리</a>
-			<!-- <a class="nav-link" th:href="@{/collection/mylist}">작업 관리</a> -->
+		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_USER')">
+			<a class="nav-link" th:href="@{/collection/mylist}">녹음 내역</a>
+		</li>
+		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+			<a class="nav-link" th:href="@{/inspection/list}">검수 관리</a>
 		</li>
 		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
 			<a class="nav-link" th:href="@{/user/list}">회원 관리</a>

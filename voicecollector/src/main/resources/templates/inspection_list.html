@@ -3,7 +3,7 @@
 <div layout:fragment="content" class="container">
 	<div class="row">
 		<div class="col-lg-6 ">
-			<h2><b>검수 작업내역</b></h2>
+			<h2><b>검수 관리</b></h2>
 		</div>
 		
 		<div class="col-lg-6">
@@ -25,6 +25,7 @@
 						<th style="width: 50%;">스크립트</th>
 						<th>녹음자</th>
 						<th>녹음일시</th>
+						<th>검수결과</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -33,9 +34,12 @@
 						<td class="text-start"><a class="table-script" data-bs-toggle="modal" href="#collectionModifyModal" th:onclick="modifyCollection([[${collection.id}]], [[${collection.script.script}]], [[${collection.base64Data}]])" th:id="|script_${collection.id}|" th:text="${collection.script.script}"></a></td>
 						<td><span th:if="${collection.author != null }" th:text="${collection.author.email}"></span></td>
 						<td th:text="${#temporals.format(collection.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+						<td th:if="${collection.inspection != null and collection.inspection.isApproved == 'y'}" th:text="승인"></td>
+						<td th:if="${collection.inspection != null and collection.inspection.isApproved == 'n'}" th:text="반려"></td>
+						<td th:if="${collection.inspection == null}" th:text="검수대기"></td>
 					</tr>
 					<tr class="text-center" th:if="${paging.isEmpty()}">
-						<td colspan="4">등록된 문장이 없습니다.</td>
+						<td colspan="5">등록된 문장이 없습니다.</td>
 					</tr>
 				</tbody>
 			</table>

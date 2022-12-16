@@ -5,7 +5,7 @@
 	<!-- subtitle & the number of cases-->
 	<div class="row" id="subtitle">
 		<div class="col-lg-6 col-md-6">
-			<h2>스크립트 녹음</h2>
+			<h2>녹음 작업</h2>
 		</div>
 
 		<div class="col-lg-6  col-md-6">
@@ -20,7 +20,7 @@
 
 			<!-- script sentence -->
 			<div>
-				<p>스크립트 문장</p>
+				<p>대본 문장</p>
 				<h4 id="scriptSentence" th:if="${#strings.equals(scriptId, '0')}" th:text="${script}" style="color: blue; font-weight: bold"></h4>
 				<h4 id="scriptSentence" th:if="!${#strings.equals(scriptId, '0')}" th:text="${script}"></h4>
 				<input type="hidden" id="scriptId" th:value="${scriptId}"/>

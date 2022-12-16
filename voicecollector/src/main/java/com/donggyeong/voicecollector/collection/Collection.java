@@ -1,14 +1,20 @@
 package com.donggyeong.voicecollector.collection;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 
 import com.donggyeong.voicecollector.BasetimeEntity;
+import com.donggyeong.voicecollector.inspection.Inspection;
 import com.donggyeong.voicecollector.registration.Registration;
 import com.donggyeong.voicecollector.user.SiteUser;
 
@@ -43,6 +49,9 @@ public class Collection extends BasetimeEntity{
 	
 	@ManyToOne
 	private Registration script;
+	
+	@OneToOne(mappedBy = "work", cascade = CascadeType.REMOVE)
+	private Inspection inspection;
 	
 	@PrePersist
 	public void prePersist() {
