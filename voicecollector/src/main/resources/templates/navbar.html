@@ -3,7 +3,7 @@
 
 	<ul class="navbar-nav mr-auto" style="margin-right: 4%;">
 		<li>
-			<span class="gray-font" th:text="|${#authentication.principal.username}님 반갑습니다.|"></span>
+			<span class="gray-font" th:text="|사용자 : ${#authentication.principal.username}|"></span>
 		</li>
 		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
 			<a class="nav-link" th:href="@{/registration/list}">대본 등록</a>

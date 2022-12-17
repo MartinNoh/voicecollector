@@ -243,4 +243,44 @@ public class CollectionService {
 		collection.setInUseYn("n");
 		this.collectionRepository.save(collection);
 	}
+	
+	public int getTotalCnt(String username) {
+		SiteUser siteUser = userService.getUserByEmail(username);
+		// ADMIN은 모든 리스트 가져오기
+		if("ROLE_ADMIN".equals(siteUser.getRole().getValue())) {
+			return this.collectionRepository.getTotalCollectionCnt();
+		} else {
+			return this.collectionRepository.getTotalCollectionCnt(siteUser);
+		}
+	}
+	
+	public int getWaitCnt(String username) {
+		SiteUser siteUser = userService.getUserByEmail(username);
+		// ADMIN은 모든 리스트 가져오기
+		if("ROLE_ADMIN".equals(siteUser.getRole().getValue())) {
+			return this.collectionRepository.getWaitCollectionCnt();
+		} else {
+			return this.collectionRepository.getWaitCollectionCnt(siteUser);
+		}
+	}
+	
+	public int getYCnt(String username) {
+		SiteUser siteUser = userService.getUserByEmail(username);
+		// ADMIN은 모든 리스트 가져오기
+		if("ROLE_ADMIN".equals(siteUser.getRole().getValue())) {
+			return this.collectionRepository.getYCollectionCnt();
+		} else {
+			return this.collectionRepository.getYCollectionCnt(siteUser);
+		}
+	}
+	
+	public int getNCnt(String username) {
+		SiteUser siteUser = userService.getUserByEmail(username);
+		// ADMIN은 모든 리스트 가져오기
+		if("ROLE_ADMIN".equals(siteUser.getRole().getValue())) {
+			return this.collectionRepository.getNCollectionCnt();
+		} else {
+			return this.collectionRepository.getNCollectionCnt(siteUser);
+		}
+	}
 }

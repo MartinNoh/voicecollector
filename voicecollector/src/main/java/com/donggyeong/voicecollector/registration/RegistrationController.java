@@ -34,7 +34,9 @@ public class RegistrationController {
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/list")
 	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, RegistrationForm registrationForm) {
+		int totalCnt = this.registrationService.getTotalCnt();
 		Page<Registration> paging = this.registrationService.getList(page, kw);
+		model.addAttribute("totalCnt", totalCnt);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		return "registration_list";
@@ -68,7 +70,7 @@ public class RegistrationController {
 			this.registrationService.readExcel(excelContents, siteUser);
 		} catch(Exception e) {
 			e.printStackTrace();
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "컬럼명과 입력하신 스크립트 포맷을 확인 바랍니다.");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "컬럼명과 입력하신 대본 포맷을 확인 바랍니다.");
 		}
 		return "redirect:/registration/list";
 	}

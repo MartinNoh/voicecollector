@@ -28,6 +28,10 @@ public class RegistrationService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final RegistrationRepository registrationRepository;
 	
+	public int getTotalCnt() {
+		return this.registrationRepository.getTotalRegistrationCnt();
+	}
+	
 	public Page<Registration> getList(int page, String kw) {
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("createdDate"));

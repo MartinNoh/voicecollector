@@ -67,4 +67,20 @@ public class InspectionService {
 			throw new DataNotFoundException("Data not found.");
 		}
 	}
+	
+	public int getTotalCnt() {
+		return this.inspectionRepository.getTotalInspectionCnt();
+	}
+	
+	public int getWaitCnt() {
+		return this.inspectionRepository.getWaitInspectionCnt();
+	}
+	
+	public int getYCnt() {
+		return this.inspectionRepository.getYInspectionCnt();
+	}
+	
+	public int getNCnt() {
+		return this.inspectionRepository.getNInspectionCnt();
+	}
 }

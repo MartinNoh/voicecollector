@@ -42,7 +42,7 @@ public class CollectionController {
 		Registration myNewScriptData = collectionService.getMyNewScript(siteUser);
 		model.addAttribute("myRecordCnt", myRecordCnt);
 		model.addAttribute("scriptCnt", scriptCnt);
-		model.addAttribute("script", myNewScriptData == null ? "스크립트가 먼저 업로드되어야 합니다." : myNewScriptData.getScript());
+		model.addAttribute("script", myNewScriptData == null ? "대본이 먼저 업로드되어야 합니다." : myNewScriptData.getScript());
 		model.addAttribute("scriptId", myNewScriptData == null ? "0" : myNewScriptData.getId());
 		return "collection_record";
 	}	
@@ -62,7 +62,15 @@ public class CollectionController {
 	@RequestMapping("/list")
 	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category, Principal principal) {
 		String username = principal.getName();
+		int totalCnt = this.collectionService.getTotalCnt(username);
+		int waitCnt = this.collectionService.getWaitCnt(username);
+		int yCnt = this.collectionService.getYCnt(username);
+		int nCnt = this.collectionService.getNCnt(username);
 		Page<Collection> paging = this.collectionService.getList(page, kw, category, username);
+		model.addAttribute("totalCnt", totalCnt);
+		model.addAttribute("waitCnt", waitCnt);
+		model.addAttribute("yCnt", yCnt);
+		model.addAttribute("nCnt", nCnt);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		model.addAttribute("category", category);
@@ -76,7 +84,7 @@ public class CollectionController {
 		model.addAttribute("kw", kw);
 		model.addAttribute("category", category);
 		Collection collection = this.collectionService.getCollection(id);
-		model.addAttribute("script", collection.getScript().getScript() == null ? "스크립트를 가져올 수 없습니다." : collection.getScript().getScript());
+		model.addAttribute("script", collection.getScript().getScript() == null ? "대본을 가져올 수 없습니다." : collection.getScript().getScript());
 		model.addAttribute("collectionId", collection.getId() == null ? "0" : collection.getId());
 		model.addAttribute("base64Data", collection.getBase64Data() == null ? "0" : collection.getBase64Data());
 		return "collection_modify";

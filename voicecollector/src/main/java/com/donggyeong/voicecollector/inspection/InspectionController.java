@@ -32,7 +32,15 @@ public class InspectionController {
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/list")
 	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category) {
+		int totalCnt = this.inspectionService.getTotalCnt();
+		int waitCnt = this.inspectionService.getWaitCnt();
+		int yCnt = this.inspectionService.getYCnt();
+		int nCnt = this.inspectionService.getNCnt();
 		Page<Collection> paging = this.inspectionService.getList(page, kw, category);
+		model.addAttribute("totalCnt", totalCnt);
+		model.addAttribute("waitCnt", waitCnt);
+		model.addAttribute("yCnt", yCnt);
+		model.addAttribute("nCnt", nCnt);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		model.addAttribute("category", category);

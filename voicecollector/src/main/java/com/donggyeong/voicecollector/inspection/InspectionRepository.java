@@ -66,5 +66,41 @@ public interface InspectionRepository extends JpaRepository<Inspection, Integer>
 			+ "    and i.id is null "
 			+ "order by i.isApproved desc"
 			)
-	Page<Collection> findAllWaitingBySearch(@Param("kw") String kw, Pageable pageable);	
+	Page<Collection> findAllWaitingBySearch(@Param("kw") String kw, Pageable pageable);
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			)
+	Integer getTotalInspectionCnt();
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "left outer join Inspection i on i.work = c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and i.id is null "
+			)
+	Integer getWaitInspectionCnt();
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.inspection.isApproved = 'y' "
+			)
+	Integer getYInspectionCnt();
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.inspection.isApproved = 'n' "
+			)
+	Integer getNInspectionCnt();
 }

@@ -4,9 +4,11 @@
 	<div class="row">
 		<div class="col-lg-6 ">
 			<h2><b>회원 관리</b></h2>
+			<span th:text="|조회 ${paging.getTotalElements}건 / 전체 ${totalCnt}|"></span>
 		</div>
 		
 		<div class="col-lg-6">
+			<br/>
 			<div class="input-group">
 				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="회원 이메일 또는 이름 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus >
 				<div class="input-group-append">
@@ -87,7 +89,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 		
-			<!-- 스크립트 변경 모달-->		
+			<!-- 대본 변경 모달-->		
 			<div class="modal fade" id="siteUserModifyModal" aria-hidden="true" aria-labelledby="siteUserModifyModalLabel" tabindex="-1">
 				<div class="modal-dialog modal-dialog-centered modal-script">
 					<div class="modal-content">
@@ -178,7 +180,7 @@
 	  $(this).find('[autofocus]').focus();
 	});
 	
-	// 스크립트 클릭하면 변경 모달 구성
+	// 대본 클릭하면 변경 모달 구성
 	function modifySiteUser(id, email, nickname, inUseYn, role) {
 		document.getElementById('siteUserId').value = id;
 		document.getElementById('siteUserEmail').value = email;

@@ -66,4 +66,8 @@ public class UserService {
 		siteUser.setRole(userRole);
 		this.userRepository.save(siteUser);
 	}
+	
+	public int getTotalCnt() {
+		return this.userRepository.getTotalUserCnt();
+	}
 }

@@ -4,9 +4,11 @@
 	<div class="row">
 		<div class="col-lg-6 ">
 			<h2><b>녹음 작업</b></h2>
+			<span th:text="|조회 ${paging.getTotalElements}건 / 전체 ${totalCnt}건 (검수중 ${waitCnt}건, 반려 ${nCnt}건, 승인 ${yCnt}건)|"></span>
 		</div>
 		
 		<div class="col-lg-6">
+			<br/>
 			<div class="input-group">
 	            <select id="search_category" class="form-select" >
 	            	<option value="all" th:text="전체" selected></option>
@@ -14,7 +16,8 @@
 	            	<option value="wait" th:text="검수중"></option>
 	            	<option value="y" th:text="승인"></option>
 	            </select>
-				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="스크립트 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus  style="width: 60%;">
+				<input sec:authorize="hasAnyRole('ROLE_ADMIN')" type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="대본 또는 녹음자 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus style="width: 60%;">
+				<input sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_USER')" type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="대본 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus style="width: 60%;">
 				<div class="input-group-append">
 					<button class="btn btn-primary" type="button" id="btn_search">검색</button>
 					<a sec:authorize="isAuthenticated()" th:href="@{/collection/record}" role="button" id="btnCollection" class="btn btn-success">녹음하기</a>
@@ -29,7 +32,7 @@
 				<thead class="table-dark">
 					<tr class="text-center">
 						<th>번호</th>
-						<th style="width: 50%;">스크립트</th>
+						<th style="width: 50%;">대본</th>
 						<th>녹음자</th>
 						<th>녹음일시</th>
 						<th>검수결과</th>
@@ -92,7 +95,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 		
-			<!-- 스크립트 변경 모달-->		
+			<!-- 대본 변경 모달-->		
 			<div class="modal fade" id="collectionModifyModal" aria-hidden="true" aria-labelledby="collectionModifyModalLabel" tabindex="-1">
 				<div class="modal-dialog modal-dialog-centered modal-script">
 					<div class="modal-content">
@@ -106,9 +109,9 @@
 		
 						<div class="modal-body" id="modalModifyBody">
 							<div class="mb-3">
-								<label for="script" class="form-label"><b>스크립트</b></label>
+								<label for="script" class="form-label"><b>대본</b></label>
 								<div class="input-group">
-									<input type="text" id="collectionScript" class="form-control" placeholder="스크립트를 읽지 못했습니다." disabled />
+									<input type="text" id="collectionScript" class="form-control" placeholder="대본을 읽지 못했습니다." disabled />
 									<input type="hidden" id="collectionId"/>
 									<input type="hidden" id="collectionBase64Data"/>
 								</div>
@@ -172,7 +175,7 @@
 	  $(this).find('[autofocus]').focus();
 	});
 	
-	// 스크립트 클릭하면 변경 모달 구성
+	// 대본 클릭하면 변경 모달 구성
 	function modifyCollection(id, script, base64Data) {
 		document.getElementById('collectionId').value = id;
 		document.getElementById('collectionScript').value = script;

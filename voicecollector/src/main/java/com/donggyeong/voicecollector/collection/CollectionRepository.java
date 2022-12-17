@@ -23,7 +23,11 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			+ "from Collection c "
 			+ "left outer join Registration r on c.script = r "
 			+ "where 1=1 "
-			+ "    and r.script like %:kw% "
+			+ "    and ( "
+			+ "        r.script like %:kw% "
+			+ "        or c.author.email like %:kw% "
+			+ "        or c.author.nickname like %:kw% "
+			+ "    ) "
 			+ "    and r.inUseYn = 'y' "
 			+ "    and c.inUseYn = 'y' "
 			)
@@ -34,7 +38,11 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			+ "from Collection c "
 			+ "left outer join Registration r on c.script = r "
 			+ "where 1=1 "
-			+ "    and r.script like %:kw% "
+			+ "    and ( "
+			+ "        r.script like %:kw% "
+			+ "        or c.author.email like %:kw% "
+			+ "        or c.author.nickname like %:kw% "
+			+ "    ) "
 			+ "    and r.inUseYn = 'y' "
 			+ "    and c.inUseYn = 'y' "
 			+ "    and c.inspection.isApproved = :category "
@@ -47,7 +55,11 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			+ "left outer join Inspection i on i.work = c "
 			+ "left outer join Registration r on c.script = r "
 			+ "where 1=1 "
-			+ "    and r.script like %:kw% "
+			+ "    and ( "
+			+ "        r.script like %:kw% "
+			+ "        or c.author.email like %:kw% "
+			+ "        or c.author.nickname like %:kw% "
+			+ "    ) "
 			+ "    and r.inUseYn = 'y' "
 			+ "    and c.inUseYn = 'y' "
 			+ "    and i.id is null "
@@ -59,7 +71,11 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			+ "from Collection c "
 			+ "left outer join Registration r on c.script = r "
 			+ "where 1=1 "
-			+ "    and r.script like %:kw% "
+			+ "    and ( "
+			+ "        r.script like %:kw% "
+			+ "        or c.author.email like %:kw% "
+			+ "        or c.author.nickname like %:kw% "
+			+ "    ) "
 			+ "    and r.inUseYn = 'y' "
 			+ "    and c.inUseYn = 'y' "
 			+ "    and c.author = :#{#siteUser} "
@@ -71,7 +87,11 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			+ "from Collection c "
 			+ "left outer join Registration r on c.script = r "
 			+ "where 1=1 "
-			+ "    and r.script like %:kw% "
+			+ "    and ( "
+			+ "        r.script like %:kw% "
+			+ "        or c.author.email like %:kw% "
+			+ "        or c.author.nickname like %:kw% "
+			+ "    ) "
 			+ "    and r.inUseYn = 'y' "
 			+ "    and c.inUseYn = 'y' "
 			+ "    and c.author = :#{#siteUser} "
@@ -85,11 +105,91 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			+ "left outer join Inspection i on c.inspection = i "
 			+ "left outer join Registration r on c.script = r "
 			+ "where 1=1 "
-			+ "    and r.script like %:kw% "
+			+ "    and ( "
+			+ "        r.script like %:kw% "
+			+ "        or c.author.email like %:kw% "
+			+ "        or c.author.nickname like %:kw% "
+			+ "    ) "
 			+ "    and r.inUseYn = 'y' "
 			+ "    and c.inUseYn = 'y' "
 			+ "    and c.author = :#{#siteUser} "
 			+ "    and i.id is null "
 			)
 	Page<Collection> findAllWaitingBySearch(@Param("kw") String kw, Pageable pageable, @Param("siteUser") SiteUser siteUser);
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			)
+	Integer getTotalCollectionCnt();
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "left outer join Inspection i on i.work = c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and i.id is null "
+			)
+	Integer getWaitCollectionCnt();
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.inspection.isApproved = 'y' "
+			)
+	Integer getYCollectionCnt();
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.inspection.isApproved = 'n' "
+			)
+	Integer getNCollectionCnt();
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.author = :#{#siteUser} "
+			+ "    and c.inUseYn = 'y' "
+			)
+	Integer getTotalCollectionCnt(@Param("siteUser") SiteUser siteUser);
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "left outer join Inspection i on i.work = c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.author = :#{#siteUser} "
+			+ "    and i.id is null "
+			)
+	Integer getWaitCollectionCnt(@Param("siteUser") SiteUser siteUser);
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.author = :#{#siteUser} "
+			+ "    and c.inspection.isApproved = 'y' "
+			)
+	Integer getYCollectionCnt(@Param("siteUser") SiteUser siteUser);
+	
+	@Query("select "
+			+ "count(distinct c) "
+			+ "from Collection c "
+			+ "where 1=1 "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.author = :#{#siteUser} "
+			+ "    and c.inspection.isApproved = 'n' "
+			)
+	Integer getNCollectionCnt(@Param("siteUser") SiteUser siteUser);
 }

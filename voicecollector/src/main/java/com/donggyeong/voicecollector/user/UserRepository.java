@@ -21,4 +21,10 @@ public interface UserRepository extends JpaRepository<SiteUser, Long>{
 			+ "	) "
 			)
 	Page<SiteUser> findAllBySearch(@Param("kw") String kw, Pageable pageable);
+	
+	@Query("select "
+			+ "count(distinct s) "
+			+ "from SiteUser s "
+			)
+	Integer getTotalUserCnt();
 }

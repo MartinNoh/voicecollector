@@ -76,7 +76,9 @@ public class UserController {
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/list")
 	public String manage(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
+		int totalCnt = this.userService.getTotalCnt();
 		Page<SiteUser> paging = this.userService.getList(page, kw);
+		model.addAttribute("totalCnt", totalCnt);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		return "user_list";
@@ -85,7 +87,6 @@ public class UserController {
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify")
 	public String modify(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam("siteUserId") String siteUserId, @RequestParam("siteUserNickname") String siteUserNickname, @RequestParam("siteUserInUseYn") String siteUserInUseYn, @RequestParam("siteUserRole") String siteUserRole, Principal principal) {
-		
 		Page<SiteUser> paging = this.userService.getList(page, kw);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
