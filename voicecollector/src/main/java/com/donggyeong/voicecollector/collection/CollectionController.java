@@ -70,11 +70,12 @@ public class CollectionController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/mylist")
-	public String mylist(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, Principal principal) {
+	public String mylist(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category, Principal principal) {
 		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
-		Page<Collection> paging = this.collectionService.getMyList(page, kw, siteUser);
+		Page<Collection> paging = this.collectionService.getMyList(page, kw, siteUser, category);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
+		model.addAttribute("category", category);
 		return "collection_list";
 	}
 

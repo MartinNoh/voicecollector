@@ -31,23 +31,22 @@ public class InspectionController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/list")
-	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, Principal principal) {
-		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
-		Page<Collection> paging = this.inspectionService.getList(siteUser, page, kw);
+	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category) {
+		Page<Collection> paging = this.inspectionService.getList(page, kw, category);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
+		model.addAttribute("category", category);
 		return "inspection_list";
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/modify/{collectionId}")
-	public String modify(RedirectAttributes re, @PathVariable("collectionId") String collectionId, @RequestParam("isApproved") String isApproved, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, Principal principal) {
+	public String modify(RedirectAttributes re, @PathVariable("collectionId") String collectionId, @RequestParam("isApproved") String isApproved, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category, Principal principal) {
 		String username = principal.getName();
 		inspectionService.create(collectionId, isApproved, username);
-		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
-		Page<Collection> paging = this.inspectionService.getList(siteUser, page, kw);
-		re.addAttribute("paging", paging);
+		re.addAttribute("page", page);
 		re.addAttribute("kw", kw);
+		re.addAttribute("category", category);
 		return "redirect:/inspection/list";
 	}
 	

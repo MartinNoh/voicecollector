@@ -65,4 +65,31 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 			+ "    and c.author = :#{#siteUser} "
 			)
 	Page<Collection> findAllBySearch(@Param("kw") String kw, Pageable pageable, @Param("siteUser") SiteUser siteUser);
+	
+	@Query("select "
+			+ "distinct c "
+			+ "from Collection c "
+			+ "left outer join Registration r on c.script = r "
+			+ "where 1=1 "
+			+ "    and r.script like %:kw% "
+			+ "    and r.inUseYn = 'y' "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.author = :#{#siteUser} "
+			+ "    and c.inspection.isApproved = :category "
+			)
+	Page<Collection> findAllBySearch(@Param("kw") String kw, Pageable pageable, @Param("siteUser") SiteUser siteUser, @Param("category") String category);
+
+	@Query("select "
+			+ "distinct c "
+			+ "from Collection c "
+			+ "left outer join Inspection i on c.inspection = i "
+			+ "left outer join Registration r on c.script = r "
+			+ "where 1=1 "
+			+ "    and r.script like %:kw% "
+			+ "    and r.inUseYn = 'y' "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and c.author = :#{#siteUser} "
+			+ "    and i.id is null "
+			)
+	Page<Collection> findAllWaitingBySearch(@Param("kw") String kw, Pageable pageable, @Param("siteUser") SiteUser siteUser);
 }

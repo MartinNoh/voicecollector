@@ -23,15 +23,48 @@ public interface InspectionRepository extends JpaRepository<Inspection, Integer>
 			+ "        or s.email like %:kw% "
 			+ "        or s.nickname like %:kw% "
 			+ "    ) "
-			+ "    and ( "
-			+ "        c.author is null "
-			+ "        or c.author = :#{#siteUser} "
-			+ "    ) "
 			+ "    and r.inUseYn = 'y' "
 			+ "    and c.inUseYn = 'y' "
 			+ "    and s.inUseYn = 'y' "
 			+ "order by i.isApproved desc"
 			)
-	Page<Collection> findAllBySearch(@Param("siteUser") SiteUser siteUser, @Param("kw") String kw, Pageable pageable);
+	Page<Collection> findAllBySearch(@Param("kw") String kw, Pageable pageable);
 	
+	@Query("select  c "
+			+ "from Collection c "
+			+ "left outer join Inspection i on i.work = c "
+			+ "left outer join Registration r on r = c.script "
+			+ "left outer join SiteUser s on s = c.author "
+			+ "where 1=1 "
+			+ "    and ( "
+			+ "        r.script like %:kw% "
+			+ "        or s.email like %:kw% "
+			+ "        or s.nickname like %:kw% "
+			+ "    ) "
+			+ "    and r.inUseYn = 'y' "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and s.inUseYn = 'y' "
+			+ "    and c.inspection.isApproved = :category "
+			+ "order by i.isApproved desc"
+			)
+	Page<Collection> findAllBySearch(@Param("kw") String kw, @Param("category") String category, Pageable pageable);
+	
+	@Query("select  c "
+			+ "from Collection c "
+			+ "left outer join Inspection i on i.work = c "
+			+ "left outer join Registration r on r = c.script "
+			+ "left outer join SiteUser s on s = c.author "
+			+ "where 1=1 "
+			+ "    and ( "
+			+ "        r.script like %:kw% "
+			+ "        or s.email like %:kw% "
+			+ "        or s.nickname like %:kw% "
+			+ "    ) "
+			+ "    and r.inUseYn = 'y' "
+			+ "    and c.inUseYn = 'y' "
+			+ "    and s.inUseYn = 'y' "
+			+ "    and i.id is null "
+			+ "order by i.isApproved desc"
+			)
+	Page<Collection> findAllWaitingBySearch(@Param("kw") String kw, Pageable pageable);	
 }
