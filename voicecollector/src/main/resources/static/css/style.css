@@ -21,7 +21,7 @@ body {
 
 .container {
 	margin-top: 13vh;
-	max-width: 80% !important;
+	max-width: 100% !important;
 }
 
 #subtitle {
@@ -83,7 +83,7 @@ body {
 }
 
 #audioController button {
-	width: 33%;
+	width: 24.4%;
 	height: 50px;
 }
 
@@ -123,6 +123,9 @@ body {
  	color: gray !important;
 }
  
+ .gray-font {
+ 	color: gray;
+ }
 /*--------------------------------------------------------------
 # collection
 --------------------------------------------------------------*/

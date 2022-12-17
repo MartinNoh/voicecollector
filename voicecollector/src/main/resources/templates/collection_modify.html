@@ -5,7 +5,7 @@
 	<!-- subtitle & the number of cases-->
 	<div class="row" id="subtitle">
 		<div class="col-lg-12 col-md-12">
-			<h2>스크립트 재녹음</h2>
+			<h2>재녹음 작업</h2>
 		</div>
 	</div>
 	<!-- subtitle & the number of cases END-->
@@ -16,13 +16,14 @@
 
 			<!-- script sentence -->
 			<div>
-				<p>스크립트 문장</p>
+				<p>대본 문장</p>
 				<h4 id="scriptSentence" th:if="${#strings.equals(collectionId, '0')}" th:text="${script}" style="color: blue; font-weight: bold"></h4>
 				<h4 id="scriptSentence" th:if="!${#strings.equals(collectionId, '0')}" th:text="${script}"></h4>
 				<input type="hidden" id="collectionId" th:value="${collectionId}"/>
 				<input type="hidden" id="base64Data" th:value="${base64Data}"/>
 				<input type="hidden" id="kw" name="kw" th:value="${kw}">
-				<input type="hidden" id="page" name="page" th:value="${paging.number}">
+				<input type="hidden" id="page" name="page" th:value="${page}">
+				<input type="hidden" id="category" name="category" th:value="${category}">
 			</div>
 
 			<div>
@@ -38,6 +39,7 @@
 					<button type="button" id="stopBtn" class="btn btn-outline-dark" style="display: none;" disabled>■</button>
 					<button type="button" id="playBtn" class="btn btn-outline-dark" style="display: block;">▶</button>
 					<button type="button" id="nextBtn" class="btn btn-outline-primary" disabled>NEXT</button>
+					<button type="button" id="listBtn" class="btn btn-outline-success" onclick="location.href='/collection/list'">목록으로</button>
 				</div>
 
 				<div id="soundClips"></div>

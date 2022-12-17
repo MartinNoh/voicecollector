@@ -44,7 +44,7 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 	@Query("select "
 			+ "distinct c "
 			+ "from Collection c "
-			+ "left outer join Inspection i on c.inspection = i "
+			+ "left outer join Inspection i on i.work = c "
 			+ "left outer join Registration r on c.script = r "
 			+ "where 1=1 "
 			+ "    and r.script like %:kw% "

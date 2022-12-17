@@ -22,10 +22,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.donggyeong.voicecollector.DataNotFoundException;
+import com.donggyeong.voicecollector.inspection.Inspection;
+import com.donggyeong.voicecollector.inspection.InspectionRepository;
 import com.donggyeong.voicecollector.registration.Registration;
 import com.donggyeong.voicecollector.registration.RegistrationRepository;
 import com.donggyeong.voicecollector.registration.RegistrationService;
 import com.donggyeong.voicecollector.user.SiteUser;
+import com.donggyeong.voicecollector.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 import net.bramp.ffmpeg.FFmpeg;
@@ -38,10 +41,11 @@ import net.bramp.ffmpeg.builder.FFmpegBuilder;
 public class CollectionService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private final RegistrationService registrationService;	
+	private final UserService userService;
+	private final RegistrationService registrationService;
+	private final InspectionRepository inspectionRepository;
 	private final CollectionRepository collectionRepository;
 	private final RegistrationRepository registrationRepository;
-	
 	
 	public Integer getMyRecordCnt(SiteUser siteUser) {
 		return collectionRepository.getMyCollectionCnt(siteUser);
@@ -191,6 +195,11 @@ public class CollectionService {
         collection.setBase64Data(base64Data);
         collection.setFileName(fileName);
         this.collectionRepository.save(collection);
+        
+        if(collection.getInspection() != null) {
+        	Inspection i = collection.getInspection();
+        	this.inspectionRepository.delete(i);
+        }
 	}
 	
 	public static String getCurrentDateTime() {
@@ -201,22 +210,24 @@ public class CollectionService {
 		return formatter.format(today);
 	}
 	
-	public Page<Collection> getList(int page, String kw, String category) {
-		List<Sort.Order> sorts = new ArrayList<>();
-		sorts.add(Sort.Order.desc("createdDate"));
-		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-		if("all".equals(category))	return this.collectionRepository.findAllBySearch(kw, pageable);
-		else if("wait".equals(category))	return this.collectionRepository.findAllWaitingBySearch(kw, pageable);
-		else	return this.collectionRepository.findAllBySearch(kw, pageable, category);
-	}
-	
-	public Page<Collection> getMyList(int page, String kw, SiteUser siteUser, String category) {
-		List<Sort.Order> sorts = new ArrayList<>();
-		sorts.add(Sort.Order.desc("createdDate"));
-		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-		if("all".equals(category))	return this.collectionRepository.findAllBySearch(kw, pageable, siteUser);
-		else if("wait".equals(category))	return this.collectionRepository.findAllWaitingBySearch(kw, pageable, siteUser);
-		else	return this.collectionRepository.findAllBySearch(kw, pageable, siteUser, category);
+	public Page<Collection> getList(int page, String kw, String category, String username) {
+		SiteUser user = userService.getUserByEmail(username);
+		// ADMIN은 모든 리스트 가져오기
+		if("ROLE_ADMIN".equals(user.getRole().getValue())) {
+			List<Sort.Order> sorts = new ArrayList<>();
+			sorts.add(Sort.Order.desc("createdDate"));
+			Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+			if("all".equals(category))	return this.collectionRepository.findAllBySearch(kw, pageable);
+			else if("wait".equals(category))	return this.collectionRepository.findAllWaitingBySearch(kw, pageable);
+			else	return this.collectionRepository.findAllBySearch(kw, pageable, category);
+		}else {
+			List<Sort.Order> sorts = new ArrayList<>();
+			sorts.add(Sort.Order.desc("createdDate"));
+			Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+			if("all".equals(category))	return this.collectionRepository.findAllBySearch(kw, pageable, user);
+			else if("wait".equals(category))	return this.collectionRepository.findAllWaitingBySearch(kw, pageable, user);
+			else	return this.collectionRepository.findAllBySearch(kw, pageable, user, category);	
+		}
 	}
 	
 	public Collection getCollection(Integer id) {

@@ -60,19 +60,9 @@ public class CollectionController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/list")
-	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category) {
-		Page<Collection> paging = this.collectionService.getList(page, kw, category);
-		model.addAttribute("paging", paging);
-		model.addAttribute("kw", kw);
-		model.addAttribute("category", category);
-		return "collection_list";
-	}
-	
-	@PreAuthorize("isAuthenticated()")
-	@RequestMapping("/mylist")
-	public String mylist(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category, Principal principal) {
-		SiteUser siteUser = this.userService.getUserByEmail(principal.getName());
-		Page<Collection> paging = this.collectionService.getMyList(page, kw, siteUser, category);
+	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category, Principal principal) {
+		String username = principal.getName();
+		Page<Collection> paging = this.collectionService.getList(page, kw, category, username);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		model.addAttribute("category", category);
@@ -82,9 +72,9 @@ public class CollectionController {
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/modify/{id}")
 	public String modify(Model model, @PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category) {
-		Page<Collection> paging = this.collectionService.getList(page, kw, category);
-		model.addAttribute("paging", paging);
+		model.addAttribute("page", page);
 		model.addAttribute("kw", kw);
+		model.addAttribute("category", category);
 		Collection collection = this.collectionService.getCollection(id);
 		model.addAttribute("script", collection.getScript().getScript() == null ? "스크립트를 가져올 수 없습니다." : collection.getScript().getScript());
 		model.addAttribute("collectionId", collection.getId() == null ? "0" : collection.getId());
@@ -106,9 +96,10 @@ public class CollectionController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{id}")
-	public String delete(@PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, RedirectAttributes re, Principal principal) {
+	public String delete(@PathVariable("id") Integer id, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "category", defaultValue = "all") String category, RedirectAttributes re, Principal principal) {
 		re.addAttribute("page", page);
 		re.addAttribute("kw", kw);
+		re.addAttribute("category", category);
 		Collection collection = this.collectionService.getCollection(id);
 		if(!collection.getAuthor().getEmail().equals(principal.getName())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");

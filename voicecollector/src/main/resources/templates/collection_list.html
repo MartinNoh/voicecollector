@@ -3,7 +3,7 @@
 <div layout:fragment="content" class="container">
 	<div class="row">
 		<div class="col-lg-6 ">
-			<h2><b>녹음 내역</b></h2>
+			<h2><b>녹음 작업</b></h2>
 		</div>
 		
 		<div class="col-lg-6">
@@ -17,6 +17,7 @@
 				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="스크립트 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus  style="width: 60%;">
 				<div class="input-group-append">
 					<button class="btn btn-primary" type="button" id="btn_search">검색</button>
+					<a sec:authorize="isAuthenticated()" th:href="@{/collection/record}" role="button" id="btnCollection" class="btn btn-success">녹음하기</a>
 				</div>
 			</div>
 		</div>
@@ -80,7 +81,7 @@
 			</div>
 			<!-- 페이징처리 끝 -->
 			
-			<form th:action="@{/collection/mylist}" method="get" id="searchForm">
+			<form th:action="@{/collection/list}" method="get" id="searchForm">
 				<input type="hidden" id="kw" name="kw" th:value="${kw}">
 				<input type="hidden" id="page" name="page" th:value="${paging.number}">
 				<input type="hidden" id="category" name="category" th:value="${category}">
@@ -210,7 +211,8 @@
 			const collectionId = document.getElementById('collectionId').value;
 			const page = document.getElementById('page').value;
 			const kw = document.getElementById('kw').value;
-			location.href = "/collection/modify/" + collectionId + "?page=" + page + "&kw=" + kw;
+			const category = document.getElementById('category').value;
+			location.href = "/collection/modify/" + collectionId + "?page=" + page + "&kw=" + kw + "&category=" + category;
 		}
 	}
 	
@@ -220,7 +222,8 @@
 			const collectionId = document.getElementById('collectionId').value;
 			const page = document.getElementById('page').value;
 			const kw = document.getElementById('kw').value;
-			location.href = "/collection/delete/" + collectionId + "?page=" + page + "&kw=" + kw;
+			const category = document.getElementById('category').value;
+			location.href = "/collection/delete/" + collectionId + "?page=" + page + "&kw=" + kw + "&category=" + category;
 		}
 	}
 </script>

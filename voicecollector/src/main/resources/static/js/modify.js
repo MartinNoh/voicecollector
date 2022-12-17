@@ -142,7 +142,8 @@ if (navigator.mediaDevices.getUserMedia) {
 				alert("정상적으로 재녹음되었습니다.");
 				const page = document.getElementById("page").value;
 				const kw = document.getElementById("kw").value;
-				window.location.href = "/collection/list" + "?page=" + page + "&kw=" + kw;
+				const category = document.getElementById("category").value;
+				window.location.href = "/collection/list" + "?page=" + page + "&kw=" + kw + "&category=" + category;
 			} else {
 				alert("재녹음 문제가 발생하였습니다.");
 			}

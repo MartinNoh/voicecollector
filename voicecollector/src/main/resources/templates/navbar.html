@@ -1,21 +1,18 @@
-<nav th:fragment="navbarFragment" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" style="height: 5%; justify-content: space-between;">
-	<h2 style="color: white; margin-left: 10%;">Voice Collector</h2>
+<nav th:fragment="navbarFragment" class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" style="height: 6%; justify-content: space-between;">
+	<h2 style="color: white; margin-left: 4%;">Voice Collector</h2>
 
-	<ul class="navbar-nav mr-auto" style="margin-right: 10%;">
+	<ul class="navbar-nav mr-auto" style="margin-right: 4%;">
+		<li>
+			<span class="gray-font" th:text="|${#authentication.principal.username}님 반갑습니다.|"></span>
+		</li>
 		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
 			<a class="nav-link" th:href="@{/registration/list}">대본 등록</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" th:href="@{/collection/record}">녹음 작업</a>
-		</li>
-		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
-			<a class="nav-link" th:href="@{/collection/list}">녹음 내역</a>
-		</li>
-		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_USER')">
-			<a class="nav-link" th:href="@{/collection/mylist}">녹음 내역</a>
+			<a class="nav-link" th:href="@{/collection/list}">녹음 작업</a>
 		</li>
 		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
-			<a class="nav-link" th:href="@{/inspection/list}">검수 관리</a>
+			<a class="nav-link" th:href="@{/inspection/list}">검수 작업</a>
 		</li>
 		<li class="nav-item" sec:authorize="hasAnyRole('ROLE_ADMIN')">
 			<a class="nav-link" th:href="@{/user/list}">회원 관리</a>
