@@ -75,23 +75,27 @@ public class UserController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping("/list")
-	public String manage(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw) {
+	public String manage(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam(value = "role_category", defaultValue = "all") String role_category, @RequestParam(value = "use_category", defaultValue = "all") String use_category) {
 		int totalCnt = this.userService.getTotalCnt();
-		Page<SiteUser> paging = this.userService.getList(page, kw);
+		Page<SiteUser> paging = this.userService.getList(page, kw, role_category, use_category);
 		model.addAttribute("totalCnt", totalCnt);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
+		model.addAttribute("role_category", role_category);
+		model.addAttribute("use_category", use_category);
 		return "user_list";
 	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify")
-	public String modify(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam("siteUserId") String siteUserId, @RequestParam("siteUserNickname") String siteUserNickname, @RequestParam("siteUserInUseYn") String siteUserInUseYn, @RequestParam("siteUserRole") String siteUserRole, Principal principal) {
-		Page<SiteUser> paging = this.userService.getList(page, kw);
+	public String modify(Model model, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "kw", defaultValue = "") String kw, @RequestParam("siteUserId") String siteUserId, @RequestParam("siteUserNickname") String siteUserNickname, @RequestParam("siteUserInUseYn") String siteUserInUseYn, @RequestParam("siteUserRole") String siteUserRole, Principal principal, @RequestParam(value = "role_category", defaultValue = "all") String role_category, @RequestParam(value = "use_category", defaultValue = "all") String use_category) {
+		Page<SiteUser> paging = this.userService.getList(page, kw, role_category, use_category);
 		model.addAttribute("paging", paging);
 		model.addAttribute("kw", kw);
 		model.addAttribute("siteUserId", siteUserId);
 		model.addAttribute("modalClick", "modify");
+		model.addAttribute("role_category", role_category);
+		model.addAttribute("use_category", use_category);
 		this.userService.modify(siteUserId, siteUserNickname, siteUserInUseYn, siteUserRole);
 		return "user_list";
 	}

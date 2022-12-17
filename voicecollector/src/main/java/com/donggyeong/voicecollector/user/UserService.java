@@ -50,11 +50,25 @@ public class UserService {
 		}
 	}
 	
-	public Page<SiteUser> getList(int page, String kw) {
+	public Page<SiteUser> getList(int page, String kw, String role_category, String use_category) {
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("createdDate"));
 		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-		return this.userRepository.findAllBySearch(kw, pageable);
+		if("all".equals(use_category)) {
+			if("all".equals(role_category)) {
+				return this.userRepository.findAllBySearch(kw, pageable);
+			}else {
+				UserRole userRole = UserRole.valueOf(role_category.toUpperCase());
+				return this.userRepository.findAllRoleBySearch(kw, pageable, userRole);
+			}
+		}else {
+			if("all".equals(role_category)) {
+				return this.userRepository.findAllUseBySearch(kw, pageable, use_category);
+			}else {
+				UserRole userRole = UserRole.valueOf(role_category.toUpperCase());
+				return this.userRepository.findAllUseRoleBySearch(kw, pageable, use_category, userRole);
+			}
+		}
 	}
 	
 	public void modify(String siteUserId, String siteUserNickname, String siteUserInUseYn, String siteUserRole) {

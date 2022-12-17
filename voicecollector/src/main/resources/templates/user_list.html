@@ -10,7 +10,18 @@
 		<div class="col-lg-6">
 			<br/>
 			<div class="input-group">
-				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="회원 이메일 또는 이름 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus >
+	            <select id="search_role_category" class="form-select" >
+	            	<option value="all" selected>권한 전체</option>
+	            	<option value="user">작업자</option>
+	            	<option value="manager">검수자</option>
+	            	<option value="admin">관리자</option>
+	            </select>
+	            <select id="search_use_category" class="form-select" >
+	            	<option value="all" selected>사용 전체</option>
+	            	<option value="y">활성</option>
+	            	<option value="n">비활성</option>
+	            </select>
+				<input type="text" id="search_kw" class="form-control" th:value="${kw}" placeholder="회원 이메일 또는 이름 검색어 입력." onkeyup="if(window.event.keyCode==13){enterSearchBtn()}" autofocus style="width: 50%;">
 				<div class="input-group-append">
 					<button class="btn btn-primary" type="button" id="btn_search">검색</button>
 				</div>
@@ -44,7 +55,7 @@
 						<td th:text="${#temporals.format(siteUser.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
 					</tr>
 					<tr class="text-center" th:if="${paging.isEmpty()}">
-						<td colspan="4">등록된 문장이 없습니다.</td>
+						<td colspan="6">등록된 문장이 없습니다.</td>
 					</tr>
 				</tbody>
 			</table>
@@ -82,6 +93,8 @@
 			<form th:action="@{/user/list}" method="get" id="searchForm">
 				<input type="hidden" id="kw" name="kw" th:value="${kw}">
 				<input type="hidden" id="page" name="page" th:value="${paging.number}">
+				<input type="hidden" id="role_category" name="role_category" th:value="${role_category}">
+				<input type="hidden" id="use_category" name="use_category" th:value="${use_category}">
 			</form>
 		</div>
 	</div>
@@ -106,6 +119,8 @@
 								<input type="hidden" id="kwModal" name="kw" th:value="${kw}">
 								<input type="hidden" id="pageModal" name="page" th:value="${paging.number}">
 								<input type="hidden" id="siteUserId" name="siteUserId" />
+								<input type="hidden" id="roleCategoryModal" name="role_category" th:value="${role_category}">
+								<input type="hidden" id="useCategoryModal" name="use_category" th:value="${use_category}">
 								<div class="mb-3">
 									<label for="email" class="form-label"><b>이메일</b></label>
 									<div class="input-group">
@@ -153,6 +168,18 @@
 
 
 <script layout:fragment="script" type='text/javascript' th:inline="javascript">
+	window.onload = function() {
+		// 변경 시 모달 가져오기
+		if(/*[[${#strings.equals(modalClick, 'modify')}]]*/ 'default'){
+			document.getElementById(/*[[|site_user_${siteUserId}|]]*/ 'default').click();
+			alert("정보가 변경되었습니다.")
+		}
+		
+		// select category
+		document.getElementById("search_role_category").value = document.getElementById('role_category').value;
+		document.getElementById("search_use_category").value = document.getElementById('use_category').value;
+	}
+	
 	// 페이지네이션 클릭
 	const page_elements = document.getElementsByClassName("page-link");
 	Array.from(page_elements).forEach(function(element) {
@@ -167,6 +194,8 @@
 	btn_search.addEventListener('click', function() {
 		document.getElementById('kw').value = document.getElementById('search_kw').value;
 		document.getElementById('page').value = 0; // 검색버튼을 클릭할 경우 0페이지부터 조회한다.
+		document.getElementById('role_category').value = document.getElementById('search_role_category').value;
+		document.getElementById('use_category').value = document.getElementById('search_use_category').value;
 		document.getElementById('searchForm').submit();
 	});
 	
@@ -187,13 +216,5 @@
 		document.getElementById('siteUserNickname').value = nickname;
 		document.getElementById('siteUserInUseYn').value = inUseYn;
 		document.getElementById('siteUserRole').value = role;
-	}
-	
-	// 변경 시 모달 가져오기
-	window.onload = function() {
-		if(/*[[${#strings.equals(modalClick, 'modify')}]]*/ 'default'){
-			document.getElementById(/*[[|site_user_${siteUserId}|]]*/ 'default').click();
-			alert("정보가 변경되었습니다.")
-		}
 	}
 </script>
