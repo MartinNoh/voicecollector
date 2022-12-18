@@ -118,8 +118,9 @@
 							<br/>
 							<form th:action="@{/registration/read/excel}" method="post">
 								<div class="mb-3">
-									<label for="excelContents" class="form-label">2. 엑셀 입력 (A1셀 'script' 입력, A2셀부터 아래로 대본 나열.)</label>
-									<div class="input-group d-flex justify-content-between">
+									<label for="excelContents" class="form-label">2. 엑셀 입력 (예시 : A1셀 'script' 입력, A2셀부터 아래로 대본 나열.)</label>
+									<img th:src="@{/img/sample_script.PNG}" style="width: 100%; border: solid 1px gray;"/>
+									<div class="input-group d-flex justify-content-between" style="margin-top: 1rem">
 										<input type="file" id="inputFile" onchange="readExcel()" style="margin-top: 0.3rem" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
 										<input type="hidden" id="excelContents" name="excelContents">
 										<input type="hidden" id="kwExcelModal" name="kw" th:value="${kw}">
