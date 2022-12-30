@@ -129,6 +129,10 @@ if (navigator.mediaDevices.getUserMedia) {
 		}
 
 		async function uploadFile(base64Data) {
+			// 로딩 스피너 표시			
+			document.getElementById("loading-background").style.display = "block";
+			document.getElementById("loading-container").style.display = "block";
+
 			let formData = new FormData();
 			formData.append("scriptId", scriptId);
 			formData.append("audioType", audioType);
@@ -139,9 +143,17 @@ if (navigator.mediaDevices.getUserMedia) {
 			});
 
 			if (response.status == 200) {
+				// 로딩 스피너 해제
+				document.getElementById("loading-background").style.display = "none";
+				document.getElementById("loading-container").style.display = "none";
+
 				alert("정상적으로 업로드되었습니다.");
 				window.location.href = "/collection/record";
 			} else {
+				// 로딩 스피너 해제
+				document.getElementById("loading-background").style.display = "none";
+				document.getElementById("loading-container").style.display = "none";
+				
 				alert("업로드 문제가 발생하였습니다.");
 			}
 		}
