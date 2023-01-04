@@ -24,11 +24,19 @@
 		      </div>
 		      
 		      <div class="modal-body" id="modalBody">
-		          <form th:action="@{/user/signup}" th:object="${userCreateForm}" method="post">
+			      <input type="hidden" id="confirmCode" value="" />
+		          <form th:action="@{/user/signup}" th:object="${userCreateForm}" method="post" onsubmit="return checkCode();">
 			        <div th:replace="form_errors :: formErrorsFragment"></div>
 			        <div class="mb-3">
 			            <label for="email" class="form-label">이메일</label>
-			            <input type="email" th:field="*{email}" class="form-control" placeholder="email@example.com">
+						<div class="input-group">
+				            <input type="email" th:field="*{email}" class="form-control" placeholder="email@example.com">
+							<button type="button" class="btn btn-light" onclick="emailConfirm()">메일 인증</button>
+						</div>
+			        </div>
+    			    <div class="mb-3">
+			            <label for="emailCode" class="form-label">메일 인증 코드</label>
+			            <input type="password" id="emailCode" class="form-control" placeholder="⦁ ⦁ ⦁ ⦁ ⦁ ⦁ ⦁ ⦁">
 			        </div>
 			        <div class="mb-3">
 			            <label for="password1" class="form-label">비밀번호</label>
@@ -58,8 +66,46 @@
 </div>
 
 <script layout:fragment="script" type='text/javascript' th:inline="javascript">
-window.onload = function(){
-	document.getElementById('btnSignup').click();
-}
+	window.onload = function(){
+		document.getElementById('btnSignup').click();
+	}
+	
+	function emailConfirm() {
+		const email = document.getElementById('email').value;
+		if(email == "" || email == null){
+			alert("이메일을 입력해주세요.")
+		} else {
+			confirmEmail(email);
+		}
+	}
+	
+	async function confirmEmail(email) {
+		alert("발송된 이메일 인증코드를 확인해주세요.");
+
+		let formData = new FormData();
+		formData.append("confirmEmail", email);
+		let response = await fetch('/email/confirm', {
+			method: "POST",
+			body: formData
+		});
+
+		if (response.status == 200) {
+			const result = await response.json();
+			const confirmCode = result.confirmCode;
+			document.getElementById("confirmCode").value = confirmCode;
+		} else {			
+			alert("이메일 인증코드 발송에 실패하였습니다.");
+		}
+	}
+	
+	function checkCode() {
+		const confirmCode = document.getElementById("confirmCode").value
+		const emailCode = document.getElementById("emailCode").value
+		if(confirmCode != emailCode) {
+			alert("메일 인증 코드가 잘못되었습니다. 다시 코드를 요청 바랍니다.")
+			return false;
+		}
+		return true;
+	}
 </script>
 </html>

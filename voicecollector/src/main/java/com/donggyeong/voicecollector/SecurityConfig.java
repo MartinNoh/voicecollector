@@ -33,10 +33,12 @@ public class SecurityConfig {
 		http.authorizeRequests()
 			.antMatchers("/registration/**").hasRole("ADMIN")
 			.antMatchers("/**").permitAll()
-	        .and()
+	        .and()  // @PreAuthorize 미사용 시 csrf ignore 할 것
 	        .csrf().ignoringAntMatchers("/collection/upload/**")
 	        .and()
 	        .csrf().ignoringAntMatchers("/collection/modify/**")
+	        .and()
+	        .csrf().ignoringAntMatchers("/email/confirm/**")
 	        .and()
 	        .headers()
 	        .addHeaderWriter (new XFrameOptionsHeaderWriter(
